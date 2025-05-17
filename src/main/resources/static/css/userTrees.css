@@ -1,0 +1,85 @@
+/* Общий стиль для контейнера */
+body {
+    font-family: 'Montserrat', Arial, sans-serif;
+    background: url('/images/background.jpg') no-repeat center center fixed;
+    background-size: cover; /* Заполнить весь экран */
+    color: #2D2D2D;
+    line-height: 1.6;
+}
+
+.back-button {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.7);; /* Зеленый фон */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 1em;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.back-button:hover {
+    background-color: #D32F2F; /* Тёмно-зелёный при наведении */
+    transform: translateY(-2px);
+}
+
+.user-container {
+    max-width: 1200px;
+    margin: 130px auto;
+    padding: 30px;
+    background-color: rgba(0, 0, 0, 0.3); /* Тёмный фон с прозрачностью */
+    backdrop-filter: blur(3px);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: #2C473E; /* Тёмно-зелёный текст */
+}
+
+/* Заголовок */
+.user-container h2 {
+    font-size: 2.5em;
+    color: #2D2D2D; /* Тёмно-зелёный цвет */
+    margin-bottom: 20px;
+}
+
+/* Сообщение об отсутствии деревьев */
+.no-trees-message {
+    font-size: 1.2em;
+    color: whitesmoke;
+    margin-top: 20px;
+}
+
+/* Стили для кнопок деревьев */
+.tree-buttons {
+    display: flex;
+    flex-direction: column; /* Кнопки идут в столбик */
+    gap: 15px;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.tree-button {
+    background-color: rgba(44,71,62, 0.85); /* Светло-зелёный с прозрачностью */
+    color: white; /* Тёмно-зелёный текст */
+    border: 1px solid #19211c; /* Граница зелёного цвета */
+    padding: 15px;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 300px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tree-button:hover {
+    background-color: rgba(106,190,78, 0.9); /* Светлее при наведении */
+    color: #FFFFFF; /* Белый текст */
+    transform: translateY(-3px); /* Легкий подъём */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Более выраженная тень */
+}

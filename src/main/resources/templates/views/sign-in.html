@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Вход</title>
+
+    <link th:href="@{/css/forHome.css}"  rel="stylesheet"/>
+    <link th:href="@{/css/regSing.css}"  rel="stylesheet"/>
+</head>
+
+<body>
+<div class="registration-container">
+    <h2>Вход</h2>
+
+    <!-- по умолчанию Spring Security принимает POST /login;
+         если в SecurityConfig указан .loginProcessingUrl("/auth/process-login"),
+         подставьте этот URL -->
+    <form th:action="@{/auth/sign-in}" method="post">
+
+        <div class="form-group">
+            <label for="username">Логин</label>
+            <input type="text" id="username" name="username" required/>
+
+            <label for="password">Пароль</label>
+            <input type="password" id="password" name="password" required/>
+        </div>
+
+        <!-- Сообщение об ошибке авторизации -->
+        <div id="error-message" th:if="${param.error}">
+            Неверный логин или пароль
+        </div>
+
+        <button type="submit" class="submit-btn">Войти</button>
+    </form>
+
+    <!-- ссылка на регистрацию -->
+    <a th:href="@{/auth/sign-up}" class="link">Еще не с нами? Зарегистрируйтесь</a>
+</div>
+</body>
+<script th:src="@{/js/sing.js}" defer></script>
+
+<style>
+    #error-message {
+        color: red;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+</style>
+
+</html>

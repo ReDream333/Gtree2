@@ -1,0 +1,142 @@
+/* Общий контейнер пользователя */
+
+
+body {
+    font-family: 'Montserrat', Arial, sans-serif;
+    background: url('/images/background.jpg') no-repeat center center fixed;
+    background-size: cover; /* Заполнить весь экран */
+    color: #2D2D2D;
+    line-height: 1.6;
+    overflow: hidden
+}
+
+.user-container {
+    transform: scale(0.9);
+    background-color: whitesmoke; /* Полупрозрачный белый фон */
+    border: whitesmoke;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.user-container {
+    max-width: 1200px;
+    margin: 80px auto;
+    padding: 30px;
+    background-color: rgba(0, 0, 0, 0.3); /* Тёмный фон с прозрачностью */
+    backdrop-filter: blur(3px); /* Лёгкое размытие фона (если поддерживается браузером) */
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+/* Фото пользователя */
+.user-photo {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #2C473E;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Основной блок с деталями и кнопками */
+.user-info-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+}
+
+/* Имя и описание пользователя */
+
+
+.user-details h2 {
+    font-size: 2em;
+    color: #19211c;
+}
+
+.user-details p {
+    font-size: 1em;
+}
+
+/* Кнопки справа */
+.user-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Общие стили для кнопок справа */
+.user-buttons button {
+    color: #FFFFFF; /* Белый текст */
+    border: none;
+    padding: 12px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.user-buttons .edit-profile-button {
+    background-color: #2C473E; /* Тёмно-зелёный фон */
+}
+
+.user-buttons .edit-profile-button:hover {
+    background-color: #6ABE4E; /* Светло-зелёный при наведении */
+}
+
+.user-buttons .logout-button {
+    background-color: #B14A4A; /* Приглушённо-красный фон */
+}
+
+.user-buttons .logout-button:hover {
+    background-color: #A13333; /* Темнее при наведении */
+}
+
+.user-buttons .delete-button {
+    background-color: #D32F2F; /* Более светлый приглушённо-красный */
+}
+
+.user-buttons .delete-button:hover {
+    background-color: #a72020; /* Темно-красный при наведении */
+}
+
+
+/* Кнопки для деревьев в столбик */
+.tree-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+    align-items: center;
+}
+
+.tree-buttons .button {
+    background-color: rgba(25, 33, 28, 0.8); /* Полупрозрачный тёмно-зелёный */
+    color: #F4F7F3; /* Светлый текст */
+    border: 1px solid #19211c; /* Тёмно-зелёная граница */
+    padding: 15px;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 300px; /* Одинаковый размер кнопок */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Лёгкая тень для глубины */
+}
+
+.tree-buttons .button:hover {
+    background-color: rgba(106, 190, 78, 0.9); /* Светлее при наведении */
+    color: #FFFFFF; /* Белый текст */
+    transform: translateY(-3px); /* Легкий подъём */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Более выраженная тень */
+}

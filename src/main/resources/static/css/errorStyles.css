@@ -1,0 +1,117 @@
+/* Общие стили */
+
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    background: black;
+    text-align: center;
+}
+
+#canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Анимация будет под контейнером */
+}
+
+/* Контейнер ошибок */
+.error-container {
+    position: fixed; /* Делаем контейнер фиксированным */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Центрируем по середине */
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 30px;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 2; /* Контейнер будет поверх анимации */
+}
+
+.error-container h1 {
+    font-size: 2.5em;
+    color: #e57373;
+    margin-bottom: 10px;
+}
+
+.error-container p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+/* Изображение */
+.error-image {
+    max-width: 200px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.error-image:hover {
+    transform: scale(1.1);
+}
+
+/* Кнопка */
+.error-button {
+
+    background-color: #6ABE4E;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.error-button:hover {
+    background-color: #4E9A3C;
+    transform: translateY(-3px);
+}
+
+.error-close-button {
+    background-color: #e57373; /* Красный */
+    color: white;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.error-close-button:hover {
+    background-color: #d32f2f;
+    transform: translateY(-2px);
+}
+
+/* Кнопка вернуться обратно на анимации */
+.back-button {
+    z-index: 3;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.7);; /* Зеленый фон */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 1em;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.back-button:hover {
+    background-color: #D32F2F; /* Тёмно-зелёный при наведении */
+    transform: translateY(-2px);
+}
+
+.hidden {
+    display: none;
+}

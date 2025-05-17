@@ -1,0 +1,222 @@
+/* Общий фон страницы */
+body {
+    font-family: 'Montserrat', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: url('/images/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+}
+
+/* Заголовок страницы */
+header {
+    display: flex;
+    justify-content: space-between; /* Равномерное распределение элементов */
+    align-items: center; /* Выравнивание по вертикали */
+    padding: 10px 20px;
+    background-color: rgba(0, 0, 0, 0.6); /* Цвет фона */
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column; /* Элементы идут вертикально */
+    align-items: flex-start; /* Выравнивание по левому краю */
+}
+
+#albumTitle {
+    color: #6ABE4E; /* Цвет заголовка */
+    font-size: 2.5em; /* Размер шрифта */
+    font-weight: bold; /* Жирный шрифт */
+    margin: 0; /* Убираем внешние отступы */
+}
+
+#familyMemberName {
+    color: white; /* Цвет текста */
+    font-size: 1.2em; /* Размер шрифта */
+    margin-top: 5px; /* Отступ сверху */
+}
+
+
+/* Кнопка "Назад" */
+#backButton {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background-color: #E57373; /* Красный */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#backButton:hover {
+    background-color: #D32F2F; /* Тёмно-красный */
+}
+
+/* Кнопка добавления фото */
+#uploadPhotoButton {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #6ABE4E; /* Зеленый фон */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#uploadPhotoButton:hover {
+    background-color: #4E9A3C;
+    transform: translateX(-50%) translateY(-1px);
+}
+
+/* Контейнер для фото */
+#photoAlbum {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 30px 20px;
+}
+
+/* Стили для карточек фото */
+.photo-item {
+    width: 250px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: none; /* Убираем рамку */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.9);
+    text-align: center;
+}
+
+.photo-thumb {
+    width: 100%;
+    height: 200px; /* Устанавливаем фиксированную высоту */
+    object-fit: cover; /* Масштабирование без искажения */
+    transition: transform 0.3s ease; /* Плавное увеличение */
+}
+
+.photo-thumb:hover {
+    transform: scale(1.05); /* Увеличиваем только изображение */
+    z-index: 1;
+}
+
+.photo-description {
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    background-color: white;
+}
+
+.description-text {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Кнопки */
+.photo-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.photo-actions button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.photo-actions button:hover {
+    text-decoration: underline;
+}
+
+/* Lightbox стили */
+.lightbox {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center; /* Центрируем по горизонтали */
+    align-items: center;     /* Центрируем по вертикали */
+    z-index: 1000;
+}
+
+.lightbox-content {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain; /* Сохраняет пропорции изображения */
+}
+
+
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 2em;
+    color: white;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #E57373; /* Красный при наведении */
+}
+
+
+
+/*для кнопочек под фото*/
+.edit-desc-btn, .delete-photo-btn {
+    background-color: #A3D5FF; /* Пастельно-голубой для "Изменить" */
+    color: #333; /* Тёмно-серый текст */
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.delete-photo-btn {
+    background-color: #FFB3B3; /* Пастельно-красный для "Удалить" */
+}
+
+.edit-desc-btn:hover {
+    background-color: #89CFF0; /* Более насыщенный голубой при наведении */
+    transform: translateY(-2px); /* Лёгкое поднятие */
+}
+
+.delete-photo-btn:hover {
+    background-color: #FF9999; /* Более насыщенный красный при наведении */
+    transform: translateY(-2px);
+}
+
+.edit-desc-btn:active, .delete-photo-btn:active {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3); /* Вдавливание при нажатии */
+    transform: translateY(1px);
+}

@@ -3,6 +3,7 @@ package ru.kpfu.itis.kononenko.gtree2.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.kpfu.itis.kononenko.gtree2.aop.Timed;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.UserRegisterRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.response.UserResponse;
 import ru.kpfu.itis.kononenko.gtree2.entity.User;
@@ -21,6 +22,7 @@ public class UserService {
     private final PasswordEncoder encoder;
     private final UserMapper userMapper;
 
+    @Timed("service.saveUser")
     public User save(UserRegisterRequest userRegisterRequest) {
         if (userRepository.existsByUsername(userRegisterRequest.username())) {
             throw new RuntimeException("Username already exists");

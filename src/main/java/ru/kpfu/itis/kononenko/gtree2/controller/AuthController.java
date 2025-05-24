@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.kpfu.itis.kononenko.gtree2.aop.RateLimit;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.UserLoginRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.UserRegisterRequest;
 import ru.kpfu.itis.kononenko.gtree2.entity.User;
@@ -23,6 +24,7 @@ import ru.kpfu.itis.kononenko.gtree2.service.VerificationTokenService;
 import ru.kpfu.itis.kononenko.gtree2.service.security.JwtService;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 @Controller
@@ -41,6 +43,7 @@ public class AuthController {
         return "/views/sign-in";
     }
 
+    @RateLimit(permits = 10, duration = 1, unit = TimeUnit.MINUTES)
     @PostMapping(value = "/sign-in", produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.ACCEPTED)
@@ -59,6 +62,7 @@ public class AuthController {
         );
     }
 
+    @RateLimit(permits = 10, duration = 1, unit = TimeUnit.MINUTES)
     @GetMapping("/sign-up")
     public String signUpGet(Model model) {
 //        model.addAttribute("signUpForm", new UserRegisterRequest(null, null, null));

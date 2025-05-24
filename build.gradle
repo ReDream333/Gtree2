@@ -63,6 +63,8 @@ dependencies {
 
     implementation "org.liquibase:liquibase-core:4.20.0"
 
+    implementation 'com.bucket4j:bucket4j-core:8.10.1'
+
 }
 
 tasks.named('test') {

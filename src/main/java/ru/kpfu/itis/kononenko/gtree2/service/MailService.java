@@ -6,6 +6,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import ru.kpfu.itis.kononenko.gtree2.aop.Retry;
 import ru.kpfu.itis.kononenko.gtree2.entity.User;
 import ru.kpfu.itis.kononenko.gtree2.entity.VerificationToken;
 import ru.kpfu.itis.kononenko.gtree2.properties.MailProps;
@@ -30,6 +31,7 @@ public class MailService {
         sendSimpleEmail(toEmail, subject, message);
     }
 
+    @Retry(attempts = 5, backoff = 300, on = { java.io.IOException.class })
     public void sendSimpleEmail(String toEmail, String subject, String message) {
         try {
             SimpleMailMessage msg = new SimpleMailMessage();

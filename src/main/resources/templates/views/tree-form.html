@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Создание дерева</title>
+  <link rel="stylesheet" th:href="@{/css/createTree.css}">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+<body>
+<form th:action="@{/trees}" th:object="${treeForm}" method="post">
+  <div class="form-group">
+    <label for="treeName">Название дерева:</label>
+    <input type="text" th:field="*{treeName}" id="treeName" name="treeName" placeholder="Введите название дерева" required>
+  </div>
+
+  <div class="form-group">
+    <label for="isPrivate">Приватное дерево?</label>
+    <select th:field="*{isPrivate}" id="isPrivate" name="isPrivate">
+      <option value="true">Да</option>
+      <option value="false">Нет</option>
+    </select>
+  </div>
+
+  <div class="button-container">
+    <button type="submit" class="submit-button">Создать</button>
+    <button type="button" class="cancel-button" onclick="location.href='/profile'">Отмена</button>
+  </div>
+
+</form>
+</body>
+</html>

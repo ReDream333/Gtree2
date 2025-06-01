@@ -1,48 +1,54 @@
-//package ru.kpfu.itis.kononenko.gtree2.controller;
-//
-//
-//import jakarta.servlet.http.HttpServletRequest;
-//import org.springframework.http.MediaType;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.web.bind.annotation.*;
-//import ru.kpfu.itis.kononenko.gtree2.dto.request.UserRegisterRequest;
-//import ru.kpfu.itis.kononenko.gtree2.dto.response.UserResponse;
-//import ru.kpfu.itis.kononenko.gtree2.service.UserService;
-//
-//import java.util.List;
-//
-//@Controller
-//public class UserController {
-//
-//    private final UserService userService;
-//
-//    public UserController(UserService userService) {
-//        this.userService = userService;
-//    }
-//
-//    @ResponseBody
-//    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public List<UserResponse> getUsers() {
-//        return userService.findAll();
-//    }
-//
-//    @PostMapping("/user")
-//    public String createUser(@RequestBody UserRegisterRequest userRequest, HttpServletRequest request) {
-//        String url = request.getRequestURL().toString().replace(request.getServletPath(), "");
-//        userService.save(userRequest);
-//        return "sign-success";
-//    }
-//
-//    @GetMapping("/verify")
-//    public String verifyUser(@RequestParam("code") String code, Model model) {
-////        boolean verified = userService.verifyUser(code);
-//        model.addAttribute("verified", verified);
-//        return "verification_result";
-//    }
-//
-//    @GetMapping("/sign_up")
-//    public String showSignUpForm() {
-//        return "sign_up"; // JSP для формы регистрации
-//    }
-//}
+package ru.kpfu.itis.kononenko.gtree2.controller;
+
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.multipart.MultipartFile;
+import ru.kpfu.itis.kononenko.gtree2.api.UserApi;
+import ru.kpfu.itis.kononenko.gtree2.dto.request.UserRequest;
+import ru.kpfu.itis.kononenko.gtree2.dto.response.UserResponse;
+import ru.kpfu.itis.kononenko.gtree2.service.impl.UserService;
+
+import java.util.List;
+
+@Controller
+@RequiredArgsConstructor
+public class UserController implements UserApi {
+
+    private final UserService userService;
+
+    @Override
+    public List<UserResponse> getAll(Integer offset, Integer limit) {
+        return userService.getAll(offset, limit);
+    }
+
+    @Override
+    public UserResponse getCurrent() {
+        return userService.getCurrent();
+    }
+
+    @Override
+    public UserResponse updateCurrent(UserRequest request) {
+        return userService.updateCurrent(request);
+    }
+
+    @Override
+    public void deleteCurrent() {
+        userService.deleteCurrent();
+    }
+
+    @Override
+    public String updateCurrentAvatar(MultipartFile file) {
+        return "";
+    }
+
+    @Override
+    public UserResponse getByUsername(String username) {
+        return userService.getByUsername(username);
+    }
+
+    @Override
+    public void deleteByUsername(String username) {
+        userService.deleteByUsername(username);
+    }
+}

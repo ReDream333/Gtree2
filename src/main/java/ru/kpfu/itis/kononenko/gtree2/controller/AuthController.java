@@ -1,104 +1,91 @@
 package ru.kpfu.itis.kononenko.gtree2.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import ru.kpfu.itis.kononenko.gtree2.aop.RateLimit;
+import ru.kpfu.itis.kononenko.gtree2.api.AuthApi;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.UserLoginRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.UserRegisterRequest;
-import ru.kpfu.itis.kononenko.gtree2.entity.User;
-import ru.kpfu.itis.kononenko.gtree2.entity.VerificationToken;
 import ru.kpfu.itis.kononenko.gtree2.enums.TokenStatus;
-import ru.kpfu.itis.kononenko.gtree2.service.MailService;
-import ru.kpfu.itis.kononenko.gtree2.service.UserService;
-import ru.kpfu.itis.kononenko.gtree2.service.VerificationTokenService;
-import ru.kpfu.itis.kononenko.gtree2.service.security.JwtService;
+import ru.kpfu.itis.kononenko.gtree2.service.impl.MailService;
+import ru.kpfu.itis.kononenko.gtree2.service.impl.RefreshTokenService;
+import ru.kpfu.itis.kononenko.gtree2.service.impl.UserService;
+import ru.kpfu.itis.kononenko.gtree2.service.impl.VerificationTokenService;
+import ru.kpfu.itis.kononenko.gtree2.service.security.CustomUserDetails;
+import ru.kpfu.itis.kononenko.gtree2.service.security.JwtTokenProvider;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/auth")
-public class AuthController {
+public class AuthController implements AuthApi{
 
     private final UserService userService;
     private final VerificationTokenService tokenService;
     private final MailService mailService;
+    private final RefreshTokenService refreshTokenService;
     private final AuthenticationManager authManager;
-    private final JwtService jwt;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping("/sign-in")
-    public String signIn() {
-        return "/views/sign-in";
+    @Override
+    public String signInGet() {
+        return "sign-in";
     }
 
-    @RateLimit(permits = 10, duration = 1, unit = TimeUnit.MINUTES)
-    @PostMapping(value = "/sign-in", produces = "application/json")
-    @ResponseBody
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> login(@RequestBody UserLoginRequest dto) {
+    @Override
+    public String signUpGet() {
+        return "sign-up";
+    }
 
-        Authentication auth = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(dto.username(), dto.password()));
+    @Override
+    public String signOutGet() {
+        return "";
+    }
 
-        String token = jwt.generate((UserDetails) auth.getPrincipal());
+    @Override
+    public String refreshTokenGet() {
+        return "";
+    }
+
+
+    @Override
+    public ResponseEntity<?> singInPost(UserLoginRequest request) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.username(), request.password())).getPrincipal();
+
+        String accessToken = jwtTokenProvider.generateAccessToken(userDetails);
+        String refreshToken = jwtTokenProvider.generateRefreshToken(userDetails);
+        refreshTokenService.save(userDetails.getUsername(), refreshToken);
 
         return ResponseEntity.ok(
                 Map.of(
-                        "token", token,
-                        "redirectUrl", "/profile"
+                        "accessToken", accessToken,
+                        "refreshToken", refreshToken,
+                        "redirectUrl", "/profile/me"
                 )
         );
     }
 
-    @RateLimit(permits = 10, duration = 1, unit = TimeUnit.MINUTES)
-    @GetMapping("/sign-up")
-    public String signUpGet(Model model) {
-//        model.addAttribute("signUpForm", new UserRegisterRequest(null, null, null));
-        return "registration";
+    @Override
+    public ResponseEntity<?> signUpPost(UserRegisterRequest request) {
+
+        userService.save(request);
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "success", true,
+                        "redirectUrl", "/"
+                )
+        );
     }
 
-    @PostMapping("/sign-up")
-    public String signUpPost(
-//            @ModelAttribute("signUpForm")
-            @Validated UserRegisterRequest userRegisterRequest,
-            BindingResult bindingResult,
-            Model model) {
-        if (bindingResult.hasErrors()) {
-            return "registration";
-        }
 
-        if (userService.findByUsername(userRegisterRequest.username()).isPresent()) {
-            bindingResult.rejectValue("username", "error.usernameExists", "User already exists");
-            return "registration";
-        }
 
-        if (userService.findByEmail(userRegisterRequest.email()).isPresent()) {
-            bindingResult.rejectValue("email", "error.email", "Email is already in use");
-            return "registration";
-        }
-
-        User newUser = userService.save(userRegisterRequest);
-        VerificationToken token = tokenService.createToken(newUser);
-        mailService.sendVerificationEmail(newUser, token);
-
-        model.addAttribute("email", newUser.getEmail());
-        return "auth/confirmation-sent";
-    }
-
-    @GetMapping("/confirm")
-    public ResponseEntity<String> confirmAccount(@RequestParam("token") String token) {
+    public ResponseEntity<String> confirmAccount(String token) {
         TokenStatus status = tokenService.verifyToken(token);
         return switch (status) {
             case VALID -> ResponseEntity.ok("Email подтвержден! Аккаунт активирован.");
@@ -106,5 +93,20 @@ public class AuthController {
             case ALREADY_USED -> ResponseEntity.badRequest().body("Токен уже был использован ранее.");
             default -> ResponseEntity.badRequest().body("Неверный токен подтверждения!");
         };
+    }
+
+    @Override
+    public String forgotPasswordGet() {
+        return "";
+    }
+
+    @Override
+    public String resetPasswordGet() {
+        return "";
+    }
+
+    @Override
+    public String resetPasswordConfirmGet() {
+        return "";
     }
 }

@@ -15,25 +15,22 @@
     <!-- по умолчанию Spring Security принимает POST /login;
          если в SecurityConfig указан .loginProcessingUrl("/auth/process-login"),
          подставьте этот URL -->
-    <form th:action="@{/auth/sign-in}" method="post">
+    <form id="loginForm" th:action="@{/auth/sign-in}" method="post">
 
         <div class="form-group">
-            <label for="username">Логин</label>
+            <label for="username">Никнейм</label>
             <input type="text" id="username" name="username" required/>
 
             <label for="password">Пароль</label>
             <input type="password" id="password" name="password" required/>
         </div>
 
-        <!-- Сообщение об ошибке авторизации -->
-        <div id="error-message" th:if="${param.error}">
-            Неверный логин или пароль
-        </div>
+        <!-- Контейнер для общих ошибок -->
+        <div id="common-error" class="error-message"></div>
 
         <button type="submit" class="submit-btn">Войти</button>
     </form>
 
-    <!-- ссылка на регистрацию -->
     <a th:href="@{/auth/sign-up}" class="link">Еще не с нами? Зарегистрируйтесь</a>
 </div>
 </body>

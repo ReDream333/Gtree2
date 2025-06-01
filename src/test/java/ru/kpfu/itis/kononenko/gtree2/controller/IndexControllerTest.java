@@ -8,8 +8,8 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 
 import static org.assertj.core.api.Assertions.*;
+//
 
-@RequiredArgsConstructor
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class IndexControllerTest {
 
@@ -17,6 +17,10 @@ class IndexControllerTest {
     int port;
 
     private final TestRestTemplate rest;
+
+    IndexControllerTest(TestRestTemplate rest) {
+        this.rest = rest;
+    }
 
     @Test
     void homePageIsReachable() {

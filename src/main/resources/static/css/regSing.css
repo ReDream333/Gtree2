@@ -57,6 +57,9 @@ body {
     background-color: #2c6341;
 }
 
+input.invalid {
+    border-color: #e53935;          /* Google-red */
+}
  .error-message {
      color: red;
      font-size: 0.9em;

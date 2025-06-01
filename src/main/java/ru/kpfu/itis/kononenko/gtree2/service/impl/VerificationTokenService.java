@@ -1,4 +1,4 @@
-package ru.kpfu.itis.kononenko.gtree2.service;
+package ru.kpfu.itis.kononenko.gtree2.service.impl;
 
 
 import org.springframework.stereotype.Service;

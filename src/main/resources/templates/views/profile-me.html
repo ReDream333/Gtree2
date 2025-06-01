@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мой профиль</title>
+    <link rel="stylesheet" href="/css/profile.css">
+
+</head>
+
+<body>
+<div id="error" class="error-message"></div>
+<section class="user-container">
+
+    <img id="photo" class="user-photo" src="/images/sunf.jpg" alt="avatar">
+
+    <section class="user-info-section">
+        <div class="user-details">
+            <h2 id="uname">Загрузка…</h2>
+            <p  id="email"></p>
+            <p  id="createdAt"></p>
+        </div>
+
+        <div class="tree-buttons">
+            <button class="button" onclick="location.href='/userTrees'">Просмотреть свои деревья</button>
+            <button class="button" onclick="location.href='/publicTrees'">Просмотреть чужие деревья</button>
+            <form action="${pageContext.request.contextPath}/createTree" method="GET">
+                <button type="submit" class="button">Создать новое дерево</button>
+            </form>
+        </div>
+    </section>
+
+    <div class="user-buttons">
+            <button id="upload_widget"   class="edit-profile-button">Загрузить&nbsp;фото</button>
+            <button id="edit_button"     class="edit-profile-button">Редактировать</button>
+            <button id="logout_button"   class="logout-button">Выйти</button>
+            <button id="delete_button"   class="delete-button danger">Удалить&nbsp;аккаунт</button>
+    </div>
+
+
+</section>
+
+
+<script src="https://upload-widget.cloudinary.com/latest/global/all.js" defer></script>
+<script defer src="/js/profile-me.js"></script>
+
+</body>
+</html>

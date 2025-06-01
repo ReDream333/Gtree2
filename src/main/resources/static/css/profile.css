@@ -19,8 +19,6 @@ body {
 }
 
 .user-container {
-    max-width: 1200px;
-    margin: 80px auto;
     padding: 30px;
     background-color: rgba(0, 0, 0, 0.3); /* Тёмный фон с прозрачностью */
     backdrop-filter: blur(3px); /* Лёгкое размытие фона (если поддерживается браузером) */
@@ -29,6 +27,12 @@ body {
     display: flex;
     gap: 30px;
     align-items: center;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 80%;
 }
 
 /* Фото пользователя */
@@ -49,7 +53,7 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    gap: 20px;
+    gap: 0;
 }
 
 /* Имя и описание пользователя */
@@ -139,4 +143,10 @@ body {
     color: #FFFFFF; /* Белый текст */
     transform: translateY(-3px); /* Легкий подъём */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Более выраженная тень */
+}
+
+.error-message {
+    color: red;
+    font-size: 2em;
+    margin-bottom: 10px;
 }

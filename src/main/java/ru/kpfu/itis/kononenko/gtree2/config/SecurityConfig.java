@@ -10,14 +10,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.kpfu.itis.kononenko.gtree2.service.UserService;
 import ru.kpfu.itis.kononenko.gtree2.service.security.CustomUserDetailsService;
-import ru.kpfu.itis.kononenko.gtree2.service.security.JwtAuthFilter;
+import ru.kpfu.itis.kononenko.gtree2.service.security.JwtFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -28,12 +26,13 @@ public class SecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailsService userDetailsService;
-    private final JwtAuthFilter jwtAuthFilter;
+    private final JwtFilter jwtFilter;
     private final String AUTH_ENTRY_POINTS = "/auth/**";
     private final String SING_IN_ENTRY_POINT = "/auth/sign-in";
     private final String SING_UP_ENTRY_POINT = "/auth/sign-up";
-    private final String INDEX_ENTRY_POINT = "/index";
-    private final String PROFILE_ENTRY_POINT = "/profile";
+    private final String INDEX_ENTRY_POINT = "/";
+    private final String PROFILE_ENTRY_POINT = "/profile/**";
+    private final String USER_API_ENTRY_POINT = "/users/api/**";
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
@@ -52,19 +51,23 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/css/**",
                                 "/js/**",
-                                "/images/**"
+                                "/images/**",
+                                "/error/**"
                         )
                         .permitAll()
                         .requestMatchers(
                                 AUTH_ENTRY_POINTS,
                                 INDEX_ENTRY_POINT,
-                                "/error"
+                                SING_UP_ENTRY_POINT,
+                                USER_API_ENTRY_POINT,
+                                PROFILE_ENTRY_POINT
                                 ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -76,7 +79,7 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl(INDEX_ENTRY_POINT).permitAll()
                 )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(daoAuthenticationProvider())
                 .build();
     }

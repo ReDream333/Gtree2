@@ -44,8 +44,14 @@ dependencies {
     // PostgreSQL
     implementation 'org.postgresql:postgresql:42.7.4'
 
+    //Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // Jackson для JSON
     implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}"
+
+    //GSON
+    implementation 'com.google.code.gson:gson:2.10.1'
 
     // Lombok
     implementation 'org.projectlombok:lombok'

@@ -1,4 +1,4 @@
-package ru.kpfu.itis.kononenko.gtree2.service;
+package ru.kpfu.itis.kononenko.gtree2.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

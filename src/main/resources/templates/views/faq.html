@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>FAQ</title>
+    <link rel="stylesheet" th:href="@{/css/forHome.css}">
+</head>
+<body>
+
+<div th:replace="~{base/header :: header}"></div>
+
+<nav>
+    <a th:href="@{/register}">Регистрация</a>
+    <a th:href="@{/index}">Главная</a>
+    <a th:href="@{/login}">Вход</a>
+</nav>
+
+<div class="container">
+
+    <div class="intro">
+        <h1>Добро пожаловать на сайт для создания генеалогического древа!</h1>
+        <p>
+            Сохраняйте и изучайте историю вашей семьи <br/>
+            Ниже вы можете ознакомиться с часто возникающими вопросами
+        </p>
+    </div>
+
+    <div th:replace="~{base/tree-steps :: treeSteps}"></div>
+
+    <div class="faq-item">
+        <p class="faq-question">Как создать генеалогическое древо?</p>
+        <p class="faq-answer">Просто зарегистрируйтесь и начните добавлять своих предков.</p>
+    </div>
+
+    <div class="faq-item">
+        <p class="faq-question">Это бесплатно?</p>
+        <p class="faq-answer">Да, ко всем материалам на платформе вы имеете бесплатный доступ. Это наша принципиальная
+            позиция: мы хотим сделать сервис и саму генеалогию популярной, объяснить, как важны традиции сохранения
+            семейной памяти и ценностей.</p>
+    </div>
+
+    <div class="faq-item">
+        <p class="faq-question">Я могу удалить страницу о себе или о своих прямых родственниках?</p>
+        <p class="faq-answer">Конечно, также вы можете удалить свою учетную запись, если захотите. В таком случае все
+            данные будут стерты без возможности восстановления.</p>
+    </div>
+
+    <div class="faq-item">
+        <p class="faq-question">А если мне не нравится выставлять напоказ историю своей семьи? Могу ли я скрыть своё дерево?</p>
+        <p class="faq-answer">Да, вы можете сделать его приватным.</p>
+    </div>
+
+    <div class="faq-item">
+        <p class="faq-question">Что такое публичный доступ?</p>
+        <p class="faq-answer">Это возможность делиться своим древом с другими.</p>
+    </div>
+
+    <div class="faq-item">
+        <p class="faq-question">Есть ли мобильное приложение?</p>
+        <p class="faq-answer">Нет, но мы работаем над этим!</p>
+    </div>
+
+    <div class="faq-item">
+        <p class="faq-question">Как происходит слияние деревьев?</p>
+        <p class="faq-answer">Извините, данная функция пока не поддерживается.</p>
+        <!--
+        Вы отправляете запрос автору дерева на подтверждение слияния по общему предку. Если автор согласен,
+        то ваши деревья соединяются! Конечно, при условии, что оба дерева в открытом доступе.
+        -->
+    </div>
+
+</div>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.faq-item').forEach(function (item) {
+            const question = item.querySelector('.faq-question');
+            question.addEventListener('click', function () {
+                if (item.classList.contains('active')) {
+                    item.classList.remove('active');
+                } else {
+                    document.querySelectorAll('.faq-item').forEach(function (i) { i.classList.remove('active'); });
+                    item.classList.add('active');
+                }
+            });
+        });
+    });
+</script>
+
+<div th:replace="~{base/footer :: footer}"></div>
+
+</body>
+</html>

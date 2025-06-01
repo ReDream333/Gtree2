@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная</title>
+    <link rel="stylesheet" th:href="@{/css/forHome.css}">
+</head>
+<body>
+
+<div th:replace="~{base/header :: header}"></div>
+
+<nav>
+    <a th:href="@{/}">Главная</a>
+    <a th:href="@{/faq}">FAQ</a>
+    <a th:href="@{/login}">Вход</a>
+</nav>
+
+<div class="container">
+    <div class="intro">
+        <h1>Добро пожаловать на сайт для создания генеалогического древа!</h1>
+        <p>
+            Здесь вы можете сохранить или узнать историю своей семьи.<br/>
+            Кликнув на кнопку ниже, вы сможете пройти регистрацию. Если у вас уже есть аккаунт, перейдите на вкладку «Вход».
+        </p>
+        <div th:replace="~{base/tree-steps :: treeSteps}"></div>
+
+        <button type="button" th:onclick="|location.href='@{/register}'|">Начать создание древа</button>
+    </div>
+</div>
+
+<!-- footer -->
+<div th:replace="~{base/footer :: footer}"></div>
+
+</body>
+</html>

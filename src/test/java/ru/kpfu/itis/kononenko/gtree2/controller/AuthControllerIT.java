@@ -2,22 +2,22 @@ package ru.kpfu.itis.kononenko.gtree2.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.UserLoginRequest;
 import ru.kpfu.itis.kononenko.gtree2.enums.TokenStatus;
-import ru.kpfu.itis.kononenko.gtree2.service.*;
-import ru.kpfu.itis.kononenko.gtree2.service.security.JwtService;
+import ru.kpfu.itis.kononenko.gtree2.service.impl.MailService;
+import ru.kpfu.itis.kononenko.gtree2.service.impl.UserService;
+import ru.kpfu.itis.kononenko.gtree2.service.impl.VerificationTokenService;
+import ru.kpfu.itis.kononenko.gtree2.service.security.JwtTokenProvider;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -30,10 +30,14 @@ class AuthControllerIT {
     @Autowired ObjectMapper mapper;
 
     @MockitoBean AuthenticationManager authManager;
-    @MockitoBean JwtService jwt;
-    @MockitoBean UserService userService;
-    @MockitoBean VerificationTokenService tokenService;
-    @MockitoBean MailService mailService;
+    @MockitoBean
+    JwtTokenProvider jwt;
+    @MockitoBean
+    UserService userService;
+    @MockitoBean
+    VerificationTokenService tokenService;
+    @MockitoBean
+    MailService mailService;
 
     @Test
     void loginSuccess() throws Exception {
@@ -41,7 +45,7 @@ class AuthControllerIT {
                 new UsernamePasswordAuthenticationToken("alice", null);
         given(authManager.authenticate(any(Authentication.class)))
                 .willReturn(fakeAuth);
-        given(jwt.generate(any())).willReturn("FAKE-TOKEN");
+        given(jwt.generateAccessToken(any())).willReturn("FAKE-TOKEN");
 
         mvc.perform(MockMvcRequestBuilders.post("/auth/sign-in")
                         .with(csrf())

@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
-      file: db/changelog/v1/07-01-changelog.xml
+      file: db/changelog/v1/DDL/07062025-init_changelog.sql
+  - include:
+      file: db/changelog/v1/DML/07062025-role_insert_changelog.sql

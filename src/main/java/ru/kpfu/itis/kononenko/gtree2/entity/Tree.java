@@ -2,7 +2,6 @@ package ru.kpfu.itis.kononenko.gtree2.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -31,7 +30,7 @@ public class Tree {
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    Timestamp createdAt;
+    private Timestamp createdAt;
 
     @OneToMany(mappedBy = "tree", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Node> nodes;

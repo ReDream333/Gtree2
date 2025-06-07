@@ -1,7 +1,5 @@
 package ru.kpfu.itis.kononenko.gtree2.entity;
 
-import lombok.Builder;
-
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

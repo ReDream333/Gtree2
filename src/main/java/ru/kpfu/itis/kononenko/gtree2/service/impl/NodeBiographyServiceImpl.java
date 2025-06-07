@@ -4,7 +4,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kpfu.itis.kononenko.gtree2.entity.Node;
 import ru.kpfu.itis.kononenko.gtree2.entity.NodeBiography;
 import ru.kpfu.itis.kononenko.gtree2.repository.NodeBiographyRepository;
 import ru.kpfu.itis.kononenko.gtree2.repository.NodeRepository;
@@ -19,14 +18,14 @@ public class NodeBiographyServiceImpl implements NodeBiographyService {
     private final NodeRepository nodeRepository;
 
     @Override
-    public String getBiography(Long nodeId) {
+    public String get(Long nodeId) {
         return biographyRepository.findByNodeId(nodeId)
                 .map(NodeBiography::getBiography)
                 .orElse("");
     }
 
     @Override
-    public void saveBiography(Long nodeId, String biography) {
+    public void save(Long nodeId, String biography) {
         nodeRepository.findById(nodeId)
                 .orElseThrow(() -> new EntityNotFoundException("Node not found id=" + nodeId));
         NodeBiography entity = biographyRepository.findByNodeId(nodeId)
@@ -37,7 +36,7 @@ public class NodeBiographyServiceImpl implements NodeBiographyService {
     }
 
     @Override
-    public void deleteBiography(Long nodeId) {
+    public void delete(Long nodeId) {
         biographyRepository.deleteByNodeId(nodeId);
     }
 }

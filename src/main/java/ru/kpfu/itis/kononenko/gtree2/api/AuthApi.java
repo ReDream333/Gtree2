@@ -38,7 +38,7 @@ public interface AuthApi {
     @GetMapping("/reset-password-confirm")
     String resetPasswordConfirmGet();
 
-    @RateLimit(permits = 10, duration = 1, unit = TimeUnit.MINUTES)
+    @RateLimit(permits = 10, duration = 1)
     @PostMapping(value = "/sign-in", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ResponseStatus(HttpStatus.ACCEPTED)

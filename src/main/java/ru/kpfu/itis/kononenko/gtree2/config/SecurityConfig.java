@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import ru.kpfu.itis.kononenko.gtree2.service.security.CustomUserDetailsService;
 import ru.kpfu.itis.kononenko.gtree2.service.security.JwtFilter;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @RequiredArgsConstructor

@@ -9,48 +9,57 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // Инициализация виджета Cloudinary
-    const cloudinaryWidget = cloudinary.createUploadWidget({
-        cloudName: 'gtree', // Ваш Cloudinary cloud name
-        uploadPreset: 'usersphoto' // Ваш пресет
-    }, (error, result) => {
-        if (!error && result && result.event === "success") {
-            console.log("Uploaded Image Info:", result.info);
+    // const cloudinaryWidget = cloudinary.createUploadWidget({
+    //     cloudName: 'gtree', // Ваш Cloudinary cloud name
+    //     uploadPreset: 'usersphoto' // Ваш пресет
+    // }, (error, result) => {
+    //     if (!error && result && result.event === "success") {
+    //         console.log("Uploaded Image Info:", result.info);
+    //
+    //         // Добавление нового фото в галерею
+    //         addPhotoToGallery(result.info.secure_url);
+    //     }
+    // });
+    //
+    // // Обработчик для кнопки загрузки фото
+    // uploadPhotoButton.addEventListener("click", () => {
+    //     cloudinaryWidget.open();
+    // });
+    // // Добавление нового фото в массив и отображение
+    // function addPhotoToGallery(photoUrl) {
+    //     const newPhoto = {
+    //         nodeId: nodeId,
+    //         photoUrl: photoUrl, //ВНИМАНИЕ тут было src
+    //         description: "Новое фото" // Стандартное описание
+    //     };
 
-            // Добавление нового фото в галерею
-            addPhotoToGallery(result.info.secure_url);
-        }
-    });
+    //
 
-    // Обработчик для кнопки загрузки фото
-    uploadPhotoButton.addEventListener("click", () => {
-        cloudinaryWidget.open();
-    });
-    // Добавление нового фото в массив и отображение
-    function addPhotoToGallery(photoUrl) {
-        const newPhoto = {
-            nodeId: nodeId,
-            photoUrl: photoUrl, //ВНИМАНИЕ тут было src
-            description: "Новое фото" // Стандартное описание
-        };
 
-        // Имитация сохранения фото на сервер
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.style.display = "none";
+    document.body.appendChild(fileInput);
+
+    uploadPhotoButton.addEventListener("click", () => fileInput.click());
+
+    fileInput.addEventListener("change", () => {
+        if (fileInput.files.length === 0) return;
+        const formData = new FormData();
+        formData.append("nodeId", nodeId);
+        formData.append("file", fileInput.files[0]);
         fetch("/album", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newPhoto)
+            body: formData
         })
-            .then(response => {
-                if (!response.ok) throw new Error("Ошибка при добавлении фото");
-                return response.json();
+            .then(r => r.ok ? r.json() : Promise.reject())
+            .then(photo => {
+                photos.push(photo);
+                renderPhotoAlbum();
             })
-            .then((newPhotoIs) => {
-                console.log(newPhotoIs)
-                photos.push(newPhotoIs); // Добавляем фото в массив
-                console.log(photos)
-                renderPhotoAlbum(); // Обновляем галерею
-            })
-            .catch(error => console.error("Ошибка:", error));
-    }
+            .catch(() => alert("Ошибка загрузки"));
+    });
 
     // Функция для отрисовки фотографий
     function renderPhotoAlbum() {
@@ -66,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <img src="${photo.photoUrl}" alt="Фото" class="photo-thumb">
                 <div class="photo-description">
                     <p class="description-text">${photo.description}</p>
-                    <<button class="edit-desc-btn">
+                    <button class="edit-desc-btn">
                         <i class="fas fa-edit"></i> Изменить
                     </button>
                     <button class="delete-photo-btn">

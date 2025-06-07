@@ -2,7 +2,7 @@ package ru.kpfu.itis.kononenko.gtree2.service;
 
 
 public interface NodeBiographyService {
-    String getBiography(Long nodeId);
-    void saveBiography(Long nodeId, String biography);
-    void deleteBiography(Long nodeId);
+    String get(Long nodeId);
+    void save(Long nodeId, String biography);
+    void delete(Long nodeId);
 }

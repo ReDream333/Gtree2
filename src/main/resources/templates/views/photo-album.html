@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фотоальбом</title>
+    <link rel="stylesheet" th:href="@{/css/photoAlbum.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<header>
+    <div class="header-left">
+        <h1 id="albumTitle">Фотоальбом</h1>
+        <span id="familyMemberName" th:text="${nodeName}">Имя</span>
+    </div>
+    <button id="backButton" onclick="window.history.back()">Назад</button>
+    <button id="uploadPhotoButton">Добавить фото</button>
+</header>
+
+<div id="photoAlbum" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;"></div>
+
+<div id="lightbox" class="lightbox" style="display: none;">
+    <span id="closeLightbox" class="close">&times;</span>
+    <img id="lightboxImage" class="lightbox-content" src="" alt="Full Image">
+</div>
+
+<script th:src="@{/js/photoAlbum.js}"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let photos = /*[[${photos}]]*/ [];
+    const nodeId = /*[[${nodeId}]]*/ 0;
+    /*]]>*/
+</script>
+</body>
+</html>

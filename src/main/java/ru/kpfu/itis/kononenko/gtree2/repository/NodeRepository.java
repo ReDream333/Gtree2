@@ -11,9 +11,6 @@ import java.util.List;
 public interface NodeRepository extends JpaRepository<Node, Long> {
     List<Node> findByTreeId(Long treeId);
 
-    @Query("select concat(n.firstName,' ',n.lastName) from Node n where n.id = :id")
-    String findFullName(@Param("id") Long id);
-
     @Query("""
     SELECT new ru.kpfu.itis.kononenko.gtree2.dto.response.RelationResponse(c.id, p.id)
       FROM Node p

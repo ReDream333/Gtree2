@@ -2,11 +2,8 @@ package ru.kpfu.itis.kononenko.gtree2.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;

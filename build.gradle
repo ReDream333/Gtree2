@@ -71,6 +71,9 @@ dependencies {
 
     implementation 'com.bucket4j:bucket4j-core:8.10.1'
 
+    // Minio client for photo storage
+    implementation "io.minio:minio:${minioVersion}"
+
 }
 
 tasks.named('test') {

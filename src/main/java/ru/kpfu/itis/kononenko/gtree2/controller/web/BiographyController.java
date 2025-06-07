@@ -24,7 +24,7 @@ public class BiographyController {
                 .orElseThrow(() -> new EntityNotFoundException("Node not found id=" + nodeId));
         model.addAttribute("nodeId", nodeId);
         model.addAttribute("nodeName", node.getFirstName() + " " + node.getLastName());
-        model.addAttribute("biography", biographyService.getBiography(nodeId));
+        model.addAttribute("biography", biographyService.get(nodeId));
         return "biography";
     }
 
@@ -32,14 +32,14 @@ public class BiographyController {
     @ResponseBody
     public ResponseEntity<Void> saveBiography(@RequestParam Long nodeId,
                                               @RequestParam String biography) {
-        biographyService.saveBiography(nodeId, biography);
+        biographyService.save(nodeId, biography);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
     @ResponseBody
     public ResponseEntity<Void> deleteBiography(@RequestParam Long nodeId) {
-        biographyService.deleteBiography(nodeId);
+        biographyService.delete(nodeId);
         return ResponseEntity.noContent().build();
     }
 }

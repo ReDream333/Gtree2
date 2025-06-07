@@ -7,7 +7,6 @@ const nodeInfoPanel = document.getElementById("nodeInfoPanel");
 const nodeName = document.getElementById("nodeName");
 const nodeBirthDate = document.getElementById("nodeBirthDate");
 const nodeDeathDate = document.getElementById("nodeDeathDate");
-const nodePhotoInput = document.getElementById("nodePhoto");
 const nodeViewPhoto = document.getElementById("nodeViewPhoto");
 const deleteNodeButton = document.getElementById("deleteNodeButton");
 const editNodeButton = document.getElementById("editNodeButton");
@@ -49,32 +48,43 @@ document.getElementById("upload_widget").addEventListener("click", function() {
 // Функция сохранения данных
 function saveNodeData(nodeData) {
     const updatedData = {
-        key: nodeData.key,
         firstName: editFirstName.value,
         lastName: editLastName.value,
-        birthday: editBirthDate.value,
-        death: editDeathDate.value,
-        photo: uploadedPhotoUrl || nodeData.photo
+        birthDate: editBirthDate.value,
+        deathDate: editDeathDate.value,
+        photoUrl: uploadedPhotoUrl || nodeData.photo
     };
-    console.log(updatedData);
 
     // Отправляем данные на сервер - тут конечно должен быть ajax,
     // но я уже все мозги себе съела, потому что у меня не обновляется
     // даты в диаграмме без перезагрузки. Хоть убей, имя - да, даты - нет.
     // Плюс там какие-то скрытые камни появляются.
     // Пусть пока вот так тупо будет
-    fetch("/editNode", {
+    fetch(`/api/trees/${treeId}/nodes/${nodeData.key}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedData)
     })
         .then(response => response.json())
         .then(updatedNode => {
-            console.log(updatedNode);
+            myDiagram.model.startTransaction("updateNode");
+
+            const nodeDatum = myDiagram.model.findNodeDataForKey(updatedNode.key);
+            if (nodeDatum) {
+                myDiagram.model.setDataProperty(nodeDatum, "fullName", updatedNode.fullName);
+                myDiagram.model.setDataProperty(nodeDatum, "birthday", updatedNode.birthday || "Неизвестно");
+                myDiagram.model.setDataProperty(nodeDatum, "death",    updatedNode.death    || "");
+                myDiagram.model.setDataProperty(nodeDatum, "comment",  updatedNode.comment  || "");
+                myDiagram.model.setDataProperty(nodeDatum, "photo",    updatedNode.photo    || "");
+            }
+
+            myDiagram.model.commitTransaction("updateNode");
 
 
-            //Юль, поменяй эти страшные alert и prompt это ваще кошмар
-            window.location.reload();
+            nodeInfoPanel.style.display = "none";
+
+
+
         })
         .catch(error => {
             console.error("Ошибка обновления:", error);
@@ -90,7 +100,7 @@ function openNodeInfoPanel(nodeData) {
     if (typeof nodeData.photo !== "undefined" && nodeData.photo && nodeData.photo !== "null" && nodeData.photo.trim() !== "" ) {
         nodeViewPhoto.src = nodeData.photo;
     } else {
-        nodeViewPhoto.src = "images/ava.jpg"; // Дефолтное фото
+        nodeViewPhoto.src = "/images/ava.jpg"; // Дефолтное фото
     }
 
     nodeName.textContent = `${nodeData.fullName}`;
@@ -131,7 +141,7 @@ function editNode(nodeData) {
 function deleteNode(nodeKey) {
     if (!confirm("Вы действительно хотите удалить этого родственника?")) return;
 
-    fetch(`/editNode?nodeId=${nodeKey}`, { method: "DELETE" })
+    fetch(`/api/trees/${treeId}/nodes/${nodeKey}`, { method: "DELETE" })
         .then((response) => {
             if (!response.ok) throw new Error("Ошибка при удалении");
             // Удаляем связи из модели

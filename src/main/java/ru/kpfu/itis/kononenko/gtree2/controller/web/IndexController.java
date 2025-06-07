@@ -1,4 +1,4 @@
-package ru.kpfu.itis.kononenko.gtree2.controller;
+package ru.kpfu.itis.kononenko.gtree2.controller.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,16 +11,9 @@ public class IndexController {
         return "home";
     }
 
-
     @GetMapping(value = "/faq")
     public String faq() {
         return "faq";
     }
 
-
-
-    @GetMapping(value = "/profile")
-    public String profile() {
-        return "profile";
-    }
 }

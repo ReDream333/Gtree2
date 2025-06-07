@@ -20,7 +20,7 @@ public class Tree {
     private Long id;
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;               // владелец (берём из JWT)
+    private Long userId;
 
     @Column(name = "is_private", nullable = false)
     private boolean isPrivate;

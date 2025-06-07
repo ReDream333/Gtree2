@@ -9,7 +9,6 @@ import ru.kpfu.itis.kononenko.gtree2.entity.Tree;
 import ru.kpfu.itis.kononenko.gtree2.mapper.NodeMapper;
 import ru.kpfu.itis.kononenko.gtree2.mapper.TreeMapper;
 import ru.kpfu.itis.kononenko.gtree2.repository.NodeRepository;
-import ru.kpfu.itis.kononenko.gtree2.repository.ParentChildRelationRepository;
 import ru.kpfu.itis.kononenko.gtree2.repository.TreeRepository;
 import ru.kpfu.itis.kononenko.gtree2.service.TreeService;
 
@@ -22,31 +21,14 @@ import java.util.Map;
 public class TreeServiceImpl implements TreeService {
     private final TreeRepository treeRepository;
     private final NodeRepository nodeRepository;
-    private final ParentChildRelationRepository relationRepository;
     private final TreeMapper treeMapper;
     private final NodeMapper nodeMapper;
     private final ObjectMapper mapper = new ObjectMapper();
-
-//    public String getNodesJson(Long treeId) {
-//        List<NodeDto> nodes = nodeRepository.findByTreeId(treeId).stream()
-//            .map(NodeDto::fromEntity)
-//            .collect(Collectors.toList());
-//        return new Gson().toJson(nodes);
-//    }
-//
-//    public String getRelationsJson(Long treeId) {
-//        // Логика получения связей между нодами
-//    }
 
     @Override
     public long createTree(TreeCreateRequest request) {
         Tree tree = treeMapper.toTree(request);
         return treeRepository.save(tree).getId();
-    }
-
-    @Override
-    public List<Tree> getTreesByUsername(String username) {
-        return treeRepository.findByUsername(username);
     }
 
     @Override
@@ -65,7 +47,7 @@ public class TreeServiceImpl implements TreeService {
     public String nodesAsJson(Long treeId) {
         return write(nodeRepository.findByTreeId(treeId)
                 .stream()
-                .map(nodeMapper::toDto)
+                .map(nodeMapper::toResponse)
                 .toList());
     }
 
@@ -77,11 +59,16 @@ public class TreeServiceImpl implements TreeService {
 
     @Override
     public String relationsAsJson(Long treeId) {
-        return write(relationRepository.findByTree(treeId)
+        return write(nodeRepository.findRelationsByTreeId(treeId)
                 .stream()
                 .map(r -> Map.of(
-                        "from", r.getChild().getId(),
-                        "to",   r.getParent().getId()))
-                .toList());
+                        "from", r.from(),
+                        "to",   r.to())
+                ).toList());
+    }
+
+    @Override
+    public List<Tree> getTreesByUserId(Long userId) {
+        return treeRepository.findByUserId(userId);
     }
 }

@@ -30,6 +30,7 @@ public class JwtTokenProvider {
                         userDetails.getAuthorities().stream()
                                 .map(GrantedAuthority::getAuthority)
                                 .toList())
+                .claim("userId", userDetails.getUser().getId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getExpiration()))
                 .signWith(key(), SignatureAlgorithm.HS256)

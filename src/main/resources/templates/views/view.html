@@ -1,23 +1,134 @@
-<html lang="ru">
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8"/>
+  <title>Диаграмма дерева</title>
   <script src="https://unpkg.com/gojs"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.3.2"></script>
-  <title>
-    Диаграмма дерева
-  </title>
-  <link rel="stylesheet" href="../../static/css/treeDiagram.css">
+  <link rel="stylesheet" th:href="@{/css/treeDiagram.css}"/>
 </head>
 <body>
-<head>
-  <!-- ... скрипты ... -->
-  <script th:inline="javascript">
-    const nodeDataArray = /*[[${nodes}]]*/ [];
-    const linkDataArray = /*[[${links}]]*/ [];
-    const treeId = /*[[${treeId}]]*/ 0;
-  </script>
-</head>
-<body>
-<div id="myDiagramDiv"></div>
-<!-- ... остальной интерфейс ... -->
+
+<button class="back-button" onclick="location.href='/profile/me'">Назад</button>
+
+<div id="sample">
+  <div id="myDiagramDiv"></div>
+</div>
+
+<div id="controls" style="margin-top: 10px;">
+  <div>
+    <span id="selectedNodeInfo"></span>
+  </div>
+</div>
+
+<!-- Панель информации о ноде -->
+<div id="nodeInfoPanel">
+  <button id="closePanelButton" style="float: right;">✖</button>
+
+  <!-- Фото и имя -->
+  <div style="display: flex; align-items: center;">
+    <img id="nodeViewPhoto"
+         th:src="@{/images/ava.jpg}"
+         alt="Фото"
+         style="width: 100px; height: 100px; border-radius: 50%; margin-right: 10px;"/>
+    <h2 id="nodeName">МЯУ</h2>
+  </div>
+
+  <!-- Режим просмотра -->
+  <div id="nodeViewMode">
+    <p>Дата рождения: <span id="nodeBirthDate">Неизвестно</span></p>
+    <p>Дата смерти: <span id="nodeDeathDate">Неизвестно</span></p>
+
+    <button id="editNodeButton">Редактировать</button>
+    <button id="biographyButton">Биография</button>
+    <button id="photoAlbumButton">Фото-альбом</button>
+    <button id="addParentButton" disabled>Добавить родителя</button>
+    <button id="deleteNodeButton">Удалить</button>
+  </div>
+
+  <!-- Режим редактирования -->
+  <div id="nodeEditMode">
+    <label>Фамилия: <input type="text" id="editLastName"/></label><br/>
+    <label>Имя: <input type="text" id="editFirstName"/></label><br/>
+    <label>Дата рождения: <input type="date" id="editBirthDate"/></label><br/>
+    <label>Дата смерти: <input type="date" id="editDeathDate"/></label><br/>
+
+    <button id="upload_widget">Загрузить фото</button>
+    <button id="saveNodeButton">Сохранить</button>
+    <button id="cancelEditButton">Отмена</button>
+  </div>
+
+  <!-- Cloudinary upload widget (как было в JSP) -->
+  <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
+</div>
+
+<!-- Модальное окно для добавления родителя -->
+<div id="parentModal">
+  <div>
+    <h3>Добавить родителя</h3>
+    <label>Имя: <input type="text" id="parentFirstName" placeholder="Введите имя"/></label><br/>
+    <label>Фамилия: <input type="text" id="parentLastName" placeholder="Введите фамилию"/></label><br/>
+    <label>Пол:
+      <select id="parentGender">
+        <option value="M">мужской</option>
+        <option value="F">женский</option>
+      </select>
+    </label><br/>
+    <label>Дата рождения: <input type="date" id="parentBirthDate"/></label><br/>
+    <label>Дата смерти: <input type="date" id="parentDeathDate"/></label><br/>
+    <label>Биография:
+      <textarea id="parentBiography" rows="3" placeholder="Введите биографию"></textarea>
+    </label><br/>
+
+    <label id="errorMessage">
+      Имя, фамилия и пол обязательны для заполнения.
+    </label><br/>
+    <button id="saveParentButton">Сохранить</button>
+    <button id="cancelParentButton">Отмена</button>
+  </div>
+</div>
+
+<!-- Модальное окно с поздравлением -->
+<div id="congratsModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <h2>🎉 Поздравляем! 🎉</h2>
+    <p>Только что вы добавили самую главную ноду – <b>себя</b>.<br>
+      Следующая ваша задача – взращивать дерево.<br>
+      Добавляйте своих родителей и родственников!
+    </p>
+    <button id="closeModalButton" class="modal-button">Круто!</button>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  const nodesJsonString = /*[[${nodes}]]*/ '[]';
+  const linksJsonString = /*[[${links}]]*/ '[]';
+
+  let nodeDataArray, linkDataArray;
+  try {
+    nodeDataArray = JSON.parse(nodesJsonString);
+  } catch(e) {
+    console.error("Не удалось распарсить nodesJsonString:", nodesJsonString, e);
+    nodeDataArray = [];
+  }
+  try {
+    linkDataArray = JSON.parse(linksJsonString);
+  } catch(e) {
+    console.error("Не удалось распарсить linksJsonString:", linksJsonString, e);
+    linkDataArray = [];
+  }
+
+  const treeId = /*[[${treeId}]]*/ 0;
+  console.log("nodeDataArray:", nodeDataArray);
+  console.log("linkDataArray:", linkDataArray);
+  /*]]>*/
+</script>
+
+<!-- Подключаем локальные JS‐файлы через Thymeleaf-ссылки -->
+<script th:src="@{/js/congrats.js}"></script>
+<script th:src="@{/js/treeDiagram.js}"></script> <!-- Создаёт диаграмму -->
+<script th:src="@{/js/nodeInfo.js}"></script>    <!-- Добавляет функционал нод -->
+
 </body>
 </html>

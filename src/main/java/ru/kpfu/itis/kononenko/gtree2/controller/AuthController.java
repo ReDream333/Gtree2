@@ -1,5 +1,7 @@
 package ru.kpfu.itis.kononenko.gtree2.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +18,7 @@ import ru.kpfu.itis.kononenko.gtree2.service.impl.VerificationTokenService;
 import ru.kpfu.itis.kononenko.gtree2.service.security.CustomUserDetails;
 import ru.kpfu.itis.kononenko.gtree2.service.security.JwtTokenProvider;
 
+import java.time.Duration;
 import java.util.Map;
 
 
@@ -52,7 +55,7 @@ public class AuthController implements AuthApi{
 
 
     @Override
-    public ResponseEntity<?> singInPost(UserLoginRequest request) {
+    public ResponseEntity<?> singInPost(UserLoginRequest request, HttpServletResponse response) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.username(), request.password())).getPrincipal();
@@ -60,6 +63,23 @@ public class AuthController implements AuthApi{
         String accessToken = jwtTokenProvider.generateAccessToken(userDetails);
         String refreshToken = jwtTokenProvider.generateRefreshToken(userDetails);
         refreshTokenService.save(userDetails.getUsername(), refreshToken);
+
+        // 4) Создаём HttpOnly.Cookie для accessToken
+        Cookie accessCookie = new Cookie("accessToken", accessToken);
+        accessCookie.setHttpOnly(true);
+        accessCookie.setSecure(false);
+        accessCookie.setPath("/");
+        accessCookie.setMaxAge((int) Duration.ofHours(24).getSeconds());
+
+        // 5) Создаём HttpOnly.Cookie для refreshToken
+        Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(false);
+        refreshCookie.setPath("/");
+        refreshCookie.setMaxAge((int) Duration.ofDays(7).getSeconds());
+
+        response.addCookie(accessCookie);
+        response.addCookie(refreshCookie);
 
         return ResponseEntity.ok(
                 Map.of(
@@ -78,7 +98,7 @@ public class AuthController implements AuthApi{
         return ResponseEntity.ok(
                 Map.of(
                         "success", true,
-                        "redirectUrl", "/"
+                        "redirectUrl", "/auth/sign-in"
                 )
         );
     }

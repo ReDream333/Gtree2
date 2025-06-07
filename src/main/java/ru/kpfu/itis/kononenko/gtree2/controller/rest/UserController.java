@@ -1,4 +1,4 @@
-package ru.kpfu.itis.kononenko.gtree2.controller;
+package ru.kpfu.itis.kononenko.gtree2.controller.rest;
 
 
 import lombok.RequiredArgsConstructor;

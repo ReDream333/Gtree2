@@ -2,6 +2,7 @@ package ru.kpfu.itis.kononenko.gtree2.service.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,26 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomUserDetailsService userDetailsService;
 
+    private static final List<String> EXCLUDE_URLS = List.of(
+            "/css/", "/js/", "/images/", "/auth/", "/error/"
+    );
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        return EXCLUDE_URLS.stream().anyMatch(path::startsWith);
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String token = parseJwt(request);
+        String token = extractFromCookie(request);
+
+        // 2) Если не нашли в куках, пытаемся извлечь из заголовка Authorization
+        if (token == null) {
+            token = extractFromHeader(request);
+        }
 
         if (token != null && jwtTokenProvider.isValid(token)) {
             String username = jwtTokenProvider.getUsernameFromToken(token);
@@ -53,7 +69,22 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String parseJwt(HttpServletRequest request) {
+    private String extractFromCookie(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return null;
+        }
+        for (Cookie cookie : request.getCookies()) {
+            if ("accessToken".equals(cookie.getName())) {
+                String value = cookie.getValue();
+                if (StringUtils.hasText(value)) {
+                    return value;
+                }
+            }
+        }
+        return null;
+    }
+
+    private String extractFromHeader(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
 
         if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {

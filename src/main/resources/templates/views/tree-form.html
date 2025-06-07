@@ -16,7 +16,7 @@
 
   <div class="form-group">
     <label for="isPrivate">Приватное дерево?</label>
-    <select th:field="*{isPrivate}" id="isPrivate" name="isPrivate">
+    <select th:field="*{privateTree}" id="isPrivate" name="isPrivate">
       <option value="true">Да</option>
       <option value="false">Нет</option>
     </select>
@@ -24,9 +24,10 @@
 
   <div class="button-container">
     <button type="submit" class="submit-button">Создать</button>
-    <button type="button" class="cancel-button" onclick="location.href='/profile'">Отмена</button>
+    <button type="button" class="cancel-button" onclick="location.href='/profile/me'">Отмена</button>
   </div>
 
 </form>
+<script src="/js/leafFall.js"></script>
 </body>
 </html>

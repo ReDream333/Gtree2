@@ -1,8 +1,8 @@
 function getRandomLeafImage() {
     const leafImages = [
-        "../images/yellow-leaf.png",
-        "../images/orange-leaf.png",
-        "../images/red-leaf.png"
+        "/images/yellow-leaf.png",
+        "/images/orange-leaf.png",
+        "/images/red-leaf.png"
     ];
     return leafImages[Math.floor(Math.random() * leafImages.length)];
 }

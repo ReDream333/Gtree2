@@ -1,9 +1,7 @@
-package ru.kpfu.itis.kononenko.gtree2.controller;
+package ru.kpfu.itis.kononenko.gtree2.controller.web;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -19,8 +20,8 @@ public class Node {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        @ManyToOne
-        @JoinColumn(name = "tree_id")
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "tree_id", nullable = false)
         private Tree tree;
 
 
@@ -47,11 +48,14 @@ public class Node {
         @Column(name = "photo_url")
         private String photoUrl;
 
-        @ManyToMany
+        @ManyToOne(fetch = FetchType.LAZY)
         @JoinTable(
-                name = "node_relation",
-                joinColumns = @JoinColumn(name = "child_id"),
-                inverseJoinColumns = @JoinColumn(name = "parent_id")
+                name               = "parent_child_relations",
+                joinColumns        = @JoinColumn(name = "parent_id"),
+                inverseJoinColumns = @JoinColumn(name = "child_id")
         )
-        private Set<Node> parents = new HashSet<>();
+        private Node child;               // у этого узла ровно один ребёнок
+
+        @OneToMany(mappedBy = "child")
+        private Set<Node> parents = new HashSet<>();  // у этого узла может быть много родителей
 }

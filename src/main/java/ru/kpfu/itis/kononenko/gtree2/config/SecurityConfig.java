@@ -53,7 +53,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(withDefaults())
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/css/**",
@@ -71,7 +71,7 @@ public class SecurityConfig {
                                 ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .rememberMe(withDefaults()) //????
+                .rememberMe(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(
                                 new LoginUrlAuthenticationEntryPoint(SING_IN_ENTRY_POINT))

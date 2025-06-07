@@ -1,0 +1,61 @@
+package ru.kpfu.itis.kononenko.gtree2.controller.rest;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ru.kpfu.itis.kononenko.gtree2.dto.response.NodeResponse;
+import ru.kpfu.itis.kononenko.gtree2.dto.request.NodeFormRequest;
+
+import ru.kpfu.itis.kononenko.gtree2.service.NodeService;
+
+@RestController
+@RequestMapping("api/trees/{treeId}/nodes")
+@RequiredArgsConstructor
+public class NodeRestController {
+
+
+    private final NodeService nodeService;
+
+
+    /** Получить один узел */
+    @GetMapping("/{nodeId}")
+    public ResponseEntity<NodeResponse> get(
+            @PathVariable Long nodeId) {
+
+        return ResponseEntity.ok(
+                        nodeService.get(nodeId)
+        );
+    }
+
+    /** Создать новый узел */
+    @PostMapping
+    public ResponseEntity<NodeResponse> create(
+            @PathVariable Long treeId,
+            @RequestBody NodeFormRequest form
+    ) {
+        return ResponseEntity.ok(
+                nodeService.save(treeId, form)
+        );
+    }
+
+    /** Обновить существующий узел */
+    @PutMapping("/{nodeId}")
+    public ResponseEntity<NodeResponse> update(
+            @PathVariable Long nodeId,
+            @RequestBody NodeFormRequest form
+    ) {
+        return ResponseEntity.ok(
+                nodeService.update(nodeId, form)
+        );
+    }
+
+    /** Удалить узел */
+    @DeleteMapping("/{nodeId}")
+    public ResponseEntity<Void> deleteNode(
+            @PathVariable Long nodeId) {
+        nodeService.delete(nodeId);
+        return ResponseEntity.noContent().build();
+    }
+
+
+}

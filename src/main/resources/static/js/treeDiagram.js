@@ -15,16 +15,16 @@ function init() {
             layerName: 'ViewportBackground',
             alignment: new go.Spot(0, 0, 20, 20)
         }).add(
-            new go.TextBlock('Легенда', { row: 0, font: 'bold 10pt Helvetica, Arial, sans-serif' }), // end row 0
+            new go.TextBlock('Легенда', { row: 0, font: 'bold 16pt Helvetica, Arial, sans-serif' }), // end row 0
             new go.Panel('Horizontal', { row: 1, alignment: go.Spot.Left })
                 .add(
                     new go.Shape('Rectangle', { desiredSize: new go.Size(30, 30), fill: bluegrad, margin: 5 }),
-                    new go.TextBlock('Мужчины', { font: 'bold 8pt Helvetica, bold Arial, sans-serif' })
+                    new go.TextBlock('Мужчины', { font: 'bold 10pt Helvetica, bold Arial, sans-serif' })
                 ), // end row 1
             new go.Panel('Horizontal', { row: 2, alignment: go.Spot.Left })
                 .add(
                     new go.Shape('Rectangle', { desiredSize: new go.Size(30, 30), fill: pinkgrad, margin: 5 }),
-                    new go.TextBlock('Женщины', { font: 'bold 8pt Helvetica, bold Arial, sans-serif' })
+                    new go.TextBlock('Женщины', { font: 'bold 10pt Helvetica, bold Arial, sans-serif' })
                 ) // end row 2
         )
     );
@@ -75,28 +75,37 @@ function init() {
             })
                 .bind('fill', 'gender', genderBrushConverter),
             new go.Panel('Vertical')
-                .add(
-                    new go.TextBlock({
-                        font: '18px Poppins',
-                        alignment: go.Spot.Center,
-                        margin: 6
-                    })
-                        .bind('text', 'fullName'),
-                    // new go.TextBlock().bind('text', 'birthday'),
-                    new go.TextBlock({
-                        font: 'bold 13px Poppins',
-                    }) .bind("text", (data) => {
-                        const birth =
-                            (data.birthday!=null && data.birthday !== "Неизвестно" && data.birthday!=="null") ?
-                            data.birthday.substring(0, 4) :
-                            "Неизвестно";
-                        const death =
-                            data.death!=null && data.death !== "null" ?
-                            data.death.substring(0, 4) : "";
+                    .add(
+                        new go.TextBlock({
+                            font: '18px Poppins',
+                            alignment: go.Spot.Center,
+                            margin: 6
+                        })
+                            .bind('text', 'fullName'),
+                        // new go.TextBlock().bind('text', 'birthday'),
 
-                        return death ? `${birth} - ${death}` : birth;
-                    })
-                )
+
+                        new go.TextBlock({
+                            font: "bold 13px Poppins"
+                        })
+                            .bind(
+                            "text",            // привязываем свойство text
+                            "birthday",        // к полю birthday
+                            b =>
+                                (b!=null && b !== "Неизвестно" && b!=="null")
+                                ? b.substring(0,4)
+                                : "Неизвестно"
+                        ),
+
+                        new go.TextBlock({ font: "bold 13px Poppins"})
+                        .bind("visible", "death", d => !!d)
+                        .bind(
+                            "text",
+                            "death",
+                            d => d.substring(0,4)
+                        )
+
+                    )
         );
 
 
@@ -109,7 +118,6 @@ function init() {
 
 
     //создание графа - да да, не дерева - ГРАФА
-    console.log(nodeDataArray)
     myDiagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
 
     //выбираем Ноду, которой нужно добавить родителя
@@ -200,7 +208,6 @@ function init() {
 
             // Формируем данные для отправки
             const requestData = {
-                treeId: treeId, // Глобальный treeId
                 firstName: parentFirstName,
                 lastName: parentLastName,
                 gender: parentGender,
@@ -213,7 +220,7 @@ function init() {
             console.log(requestData);
 
             // Отправляем данные на сервер
-            fetch("/addFamilyMember", {
+            fetch(`/api/trees/${treeId}/nodes`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(requestData)
@@ -226,18 +233,18 @@ function init() {
                     console.log("Новый родитель от сервера:", newParent);
                     // Добавляем нового родителя в диаграмму
                     myDiagram.model.addNodeData({
-                        key: newParent.id,
-                        fullName: newParent.firstName +" "+ newParent.lastName,
+                        key: newParent.key,
+                        fullName: newParent.fullName,
                         gender: newParent.gender,
-                        birthday: newParent.birthDate || "Неизвестно",
-                        death: newParent.deathDate,
+                        birthday: newParent.birthday || "Неизвестно",
+                        death: newParent.death,
                         comment: newParent.comment
                     });
 
                     // Добавляем связь между родителем и ребенком
                     myDiagram.model.addLinkData({
                         from: childNode.key,
-                        to: newParent.id
+                        to: newParent.key
                     });
 
                 })

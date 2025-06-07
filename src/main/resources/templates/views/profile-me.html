@@ -21,9 +21,9 @@
         </div>
 
         <div class="tree-buttons">
-            <button class="button" onclick="location.href='/userTrees'">Просмотреть свои деревья</button>
-            <button class="button" onclick="location.href='/publicTrees'">Просмотреть чужие деревья</button>
-            <form action="${pageContext.request.contextPath}/createTree" method="GET">
+            <button class="button" onclick="location.href='/trees/my'">Просмотреть свои деревья</button>
+            <button class="button" onclick="location.href='/trees/public'">Просмотреть чужие деревья</button>
+            <form th:action="@{/trees/new}" method="get">
                 <button type="submit" class="button">Создать новое дерево</button>
             </form>
         </div>

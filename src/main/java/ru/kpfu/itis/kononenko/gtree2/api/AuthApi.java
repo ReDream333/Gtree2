@@ -1,5 +1,6 @@
 package ru.kpfu.itis.kononenko.gtree2.api;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,7 +45,8 @@ public interface AuthApi {
     ResponseEntity<?> singInPost(
             @RequestBody
             @Valid
-            UserLoginRequest request
+            UserLoginRequest request,
+            HttpServletResponse response
     );
 
     @PostMapping("/sign-up")

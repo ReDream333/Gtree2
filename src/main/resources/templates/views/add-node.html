@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Первая нода</title>
+  <link rel="stylesheet" href="/css/createTree.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</head>
+<body>
+<div id="particles-js"></div>
+
+<div class="form-container">
+  <h1>Введите свои данные</h1>
+
+  <form th:action="@{|/trees/${treeId}/nodes|}"
+        th:object="${nodeForm}"
+        method="post"
+        class="tree-form">
+
+<!--    <input type="hidden" th:field="*{treeId}" th:value="${treeId}"/>-->
+    <!-- Блок с вводом имени -->
+    <div class="form-group">
+      <label for="firstName">Имя:</label>
+      <input type="text"
+             id="firstName"
+             th:field="*{firstName}"
+             placeholder="Введите имя"
+             class="input-field"/>
+      <!-- Показываем валидационные ошибки, если есть -->
+      <div class="field-error" th:if="${#fields.hasErrors('firstName')}"
+           th:errors="*{firstName}"></div>
+    </div>
+
+    <!-- Блок с вводом фамилии -->
+    <div class="form-group">
+      <label for="lastName">Фамилия:</label>
+      <input type="text"
+             id="lastName"
+             th:field="*{lastName}"
+             placeholder="Введите фамилию"
+             class="input-field"/>
+      <div class="field-error" th:if="${#fields.hasErrors('lastName')}"
+           th:errors="*{lastName}"></div>
+    </div>
+
+    <!-- Блок с выбором пола -->
+    <div class="form-group">
+      <label for="gender">Пол:</label>
+      <select id="gender" name="gender" required>
+        <option value="M">Мужской</option>
+        <option value="F">Женский</option>
+      </select>
+      <div class="field-error" th:if="${#fields.hasErrors('gender')}"
+           th:errors="*{gender}"></div>
+    </div>
+
+    <!-- Блок с датой рождения -->
+    <div class="form-group">
+      <label for="birthDate">Дата рождения:</label>
+      <input type="date"
+             id="birthDate"
+             th:field="*{birthDate}"
+             class="input-field"/>
+      <div class="field-error" th:if="${#fields.hasErrors('birthDate')}"
+           th:errors="*{birthDate}"></div>
+    </div>
+
+    <!-- Блок с датой смерти -->
+    <div class="form-group">
+      <label for="deathDate">Дата смерти:</label>
+      <input type="date"
+             id="deathDate"
+             th:field="*{deathDate}"
+             class="input-field"/>
+      <div class="field-error" th:if="${#fields.hasErrors('deathDate')}"
+           th:errors="*{deathDate}"></div>
+    </div>
+
+    <!-- Блок с комментарием -->
+    <div class="form-group">
+      <label for="comment">Комментарий:</label>
+      <textarea id="comment"
+                th:field="*{comment}"
+                placeholder="Добавьте комментарий"
+                class="textarea-field"></textarea>
+      <div class="field-error" th:if="${#fields.hasErrors('comment')}"
+           th:errors="*{comment}"></div>
+    </div>
+
+    <!-- Кнопки «Сохранить» и «Отмена» с теми же классами -->
+    <div class="button-container">
+      <button type="submit" class="submit-button">Сохранить</button>
+      <button type="button" class="cancel-button"
+              onclick="window.history.back()">Отмена</button>
+    </div>
+  </form>
+</div>
+
+<script src="/js/leafFall.js"></script>
+</body>
+</html>

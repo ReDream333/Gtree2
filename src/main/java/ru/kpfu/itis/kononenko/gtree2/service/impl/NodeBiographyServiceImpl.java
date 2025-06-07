@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kpfu.itis.kononenko.gtree2.entity.Node;
+import ru.kpfu.itis.kononenko.gtree2.entity.NodeBiography;
+import ru.kpfu.itis.kononenko.gtree2.repository.NodeBiographyRepository;
 import ru.kpfu.itis.kononenko.gtree2.repository.NodeRepository;
 import ru.kpfu.itis.kononenko.gtree2.service.NodeBiographyService;
 
@@ -13,28 +15,29 @@ import ru.kpfu.itis.kononenko.gtree2.service.NodeBiographyService;
 @Transactional
 public class NodeBiographyServiceImpl implements NodeBiographyService {
 
+    private final NodeBiographyRepository biographyRepository;
     private final NodeRepository nodeRepository;
 
     @Override
     public String getBiography(Long nodeId) {
-        Node node = nodeRepository.findById(nodeId)
-                .orElseThrow(() -> new EntityNotFoundException("Node not found id=" + nodeId));
-        return node.getComment();
+        return biographyRepository.findByNodeId(nodeId)
+                .map(NodeBiography::getBiography)
+                .orElse("");
     }
 
     @Override
     public void saveBiography(Long nodeId, String biography) {
-        Node node = nodeRepository.findById(nodeId)
+        nodeRepository.findById(nodeId)
                 .orElseThrow(() -> new EntityNotFoundException("Node not found id=" + nodeId));
-        node.setComment(biography);
-        nodeRepository.save(node);
+        NodeBiography entity = biographyRepository.findByNodeId(nodeId)
+                .orElseGet(NodeBiography::new);
+        entity.setNodeId(nodeId);
+        entity.setBiography(biography);
+        biographyRepository.save(entity);
     }
 
     @Override
     public void deleteBiography(Long nodeId) {
-        Node node = nodeRepository.findById(nodeId)
-                .orElseThrow(() -> new EntityNotFoundException("Node not found id=" + nodeId));
-        node.setComment(null);
-        nodeRepository.save(node);
+        biographyRepository.deleteByNodeId(nodeId);
     }
 }

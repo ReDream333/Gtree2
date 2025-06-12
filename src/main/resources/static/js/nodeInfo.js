@@ -7,6 +7,7 @@ const nodeInfoPanel = document.getElementById("nodeInfoPanel");
 const nodeName = document.getElementById("nodeName");
 const nodeBirthDate = document.getElementById("nodeBirthDate");
 const nodeDeathDate = document.getElementById("nodeDeathDate");
+const nodeComment = document.getElementById("nodeComment");
 const nodeZodiac = document.getElementById("nodeZodiac");
 const nodeViewPhoto = document.getElementById("nodeViewPhoto");
 const deleteNodeButton = document.getElementById("deleteNodeButton");
@@ -20,6 +21,7 @@ const editLastName = document.getElementById("editLastName");
 const editFirstName = document.getElementById("editFirstName");
 const editBirthDate = document.getElementById("editBirthDate");
 const editDeathDate = document.getElementById("editDeathDate");
+const editComment  = document.getElementById("editComment");
 const saveNodeButton = document.getElementById("saveNodeButton");
 const cancelEditButton = document.getElementById("cancelEditButton");
 
@@ -53,6 +55,7 @@ function saveNodeData(nodeData) {
         lastName: editLastName.value,
         birthDate: editBirthDate.value,
         deathDate: editDeathDate.value,
+        comment:  editComment.value,
         photoUrl: uploadedPhotoUrl || nodeData.photo
     };
 
@@ -108,6 +111,7 @@ function openNodeInfoPanel(nodeData) {
     nodeName.textContent = `${nodeData.fullName}`;
     nodeBirthDate.textContent = nodeData.birthday!== "null" ?  nodeData.birthday : "Неизвестно";
     nodeDeathDate.textContent = (nodeData.death !== "null" && nodeData.death != null && nodeData.death) ? nodeData.death : "Жив/Неизвестно о смерти";
+    nodeComment.textContent = nodeData.comment || "";
     nodeZodiac.textContent = nodeData.zodiacSign ? nodeData.zodiacSign : "-";
     deleteNodeButton.style.display = nodeData.isLeaf ? "inline-block" : "none";
 
@@ -127,6 +131,7 @@ function editNode(nodeData) {
     editLastName.value = lastName || "фамилия";
     editBirthDate.value = nodeData.birthday || "";
     editDeathDate.value = nodeData.death || "";
+    editComment.value  = nodeData.comment || "";
 
     if (nodeData.photo) {
         nodeViewPhoto.src = nodeData.photo;

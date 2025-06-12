@@ -46,6 +46,7 @@
     <p>Дата рождения: <span id="nodeBirthDate">Неизвестно</span></p>
     <p>Дата смерти: <span id="nodeDeathDate">Неизвестно</span></p>
     <p>Знак зодиака: <span id="nodeZodiac">-</span></p>
+    <p id="nodeComment"></p>
 
     <button id="editNodeButton">Редактировать</button>
     <button id="biographyButton">Биография</button>
@@ -60,6 +61,9 @@
     <label>Имя: <input type="text" id="editFirstName"/></label><br/>
     <label>Дата рождения: <input type="date" id="editBirthDate"/></label><br/>
     <label>Дата смерти: <input type="date" id="editDeathDate"/></label><br/>
+    <label>Комментарий:<br/>
+      <textarea id="editComment" rows="3" style="width: 100%;"></textarea>
+    </label><br/>
 
     <button id="upload_widget">Загрузить фото</button>
     <button id="saveNodeButton">Сохранить</button>

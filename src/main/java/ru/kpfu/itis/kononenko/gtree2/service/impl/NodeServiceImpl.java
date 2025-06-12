@@ -13,6 +13,8 @@ import ru.kpfu.itis.kononenko.gtree2.mapper.NodeMapper;
 import ru.kpfu.itis.kononenko.gtree2.repository.NodeRepository;
 import ru.kpfu.itis.kononenko.gtree2.repository.TreeRepository;
 import ru.kpfu.itis.kononenko.gtree2.service.NodeService;
+import ru.kpfu.itis.kononenko.gtree2.service.NumberaService;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,6 +29,7 @@ public class NodeServiceImpl implements NodeService {
     private final NodeRepository nodeRepository;
     private final TreeRepository treeRepository;
     private final NodeMapper nodeMapper;
+    private final NumberaService numberaService;
 
 
     @Override
@@ -43,6 +46,12 @@ public class NodeServiceImpl implements NodeService {
 
         Node node = nodeMapper.toEntity(form);
         node.setTree(tree);
+
+        if ((node.getComment() == null || node.getComment().isBlank()) && node.getBirthDate() != null) {
+            String fact = numberaService.getFact(node.getBirthDate());
+            node.setComment(fact);
+        }
+
         node.setZodiacSign(getZodiacSign(node.getBirthDate()));
         Node saved = nodeRepository.save(node);
 

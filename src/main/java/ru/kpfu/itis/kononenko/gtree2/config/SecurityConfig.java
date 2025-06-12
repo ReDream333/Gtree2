@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.kpfu.itis.kononenko.gtree2.service.security.CustomUserDetailsService;
 import ru.kpfu.itis.kononenko.gtree2.service.security.JwtFilter;
+import ru.kpfu.itis.kononenko.gtree2.service.security.RedirectEntryPoint;
 
 
 @Configuration
@@ -26,6 +27,7 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailsService userDetailsService;
     private final JwtFilter jwtFilter;
+    private final RedirectEntryPoint redirectEntryPoint;
     private final String AUTH_ENTRY_POINTS = "/auth/**";
     private final String SING_IN_ENTRY_POINT = "/auth/sign-in";
     private final String SING_UP_ENTRY_POINT = "/auth/sign-up";
@@ -73,7 +75,7 @@ public class SecurityConfig {
                 .rememberMe(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(
-                                new LoginUrlAuthenticationEntryPoint(SING_IN_ENTRY_POINT))
+                              redirectEntryPoint)
                 )
                 .logout(logout -> logout
                         .logoutSuccessUrl(INDEX_ENTRY_POINT).permitAll()

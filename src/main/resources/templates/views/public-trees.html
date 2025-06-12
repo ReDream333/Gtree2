@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Публичные деревья</title>
+  <link rel="stylesheet" th:href="@{/css/userTrees.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<button class="back-button" onclick="history.back()">Назад</button>
+
+<div class="user-container">
+  <h2>Публичные Деревья</h2>
+  <div class="tree-buttons">
+    <p class="no-trees-message" th:if="${#lists.isEmpty(publicTrees)}">Пока публичных деревьев нет, станьте первым!</p>
+    <th:block th:each="tree : ${publicTrees}">
+      <button type="button" class="tree-button" th:onclick="|location.href='@{/trees/{id}(id=${tree.id})}'|">
+        <span th:text="${tree.name}">Дерево</span>
+        <i class="fa-solid fa-tree"></i>
+      </button>
+    </th:block>
+  </div>
+</div>
+</body>
+</html>

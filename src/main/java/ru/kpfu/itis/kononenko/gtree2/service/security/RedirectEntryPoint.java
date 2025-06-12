@@ -20,9 +20,9 @@ public class RedirectEntryPoint implements AuthenticationEntryPoint {
 
         String accept = Optional.ofNullable(req.getHeader("Accept")).orElse("");
 
-        if (accept.contains("text/html")) {             // браузер хочет страницу
+        if (accept.contains("text/html")) {
             resp.sendRedirect("/auth/sign-in");
-        } else {                                        // XHR, mobile, Postman …
+        } else {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.setContentType("application/json");
             resp.getWriter().write("""

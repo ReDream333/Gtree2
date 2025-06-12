@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.kpfu.itis.kononenko.gtree2.dto.TreeForm;
+import ru.kpfu.itis.kononenko.gtree2.dto.request.TreeFormRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.TreeCreateRequest;
 import ru.kpfu.itis.kononenko.gtree2.entity.Tree;
 import ru.kpfu.itis.kononenko.gtree2.service.TreeService;
@@ -26,7 +26,7 @@ public class TreeController {
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("treeForm", new TreeForm());
+        model.addAttribute("treeForm", TreeFormRequest.builder().build());
         return "tree-form";
     }
 
@@ -36,7 +36,7 @@ public class TreeController {
             @AuthenticationPrincipal
             CustomUserDetails userDetails,
             @ModelAttribute("treeForm")
-            TreeForm form,
+            TreeFormRequest form,
             BindingResult br)
     {
         if (br.hasErrors()) {
@@ -47,8 +47,8 @@ public class TreeController {
                TreeCreateRequest
                        .builder()
                        .userId(userId)
-                       .name(form.getTreeName())
-                       .isPrivate(form.isPrivateTree())
+                       .name(form.treeName())
+                       .isPrivate(form.privateTree())
                        .build()
         );
         return "redirect:/trees/" + treeId + "/nodes/new";

@@ -8,14 +8,17 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import ru.kpfu.itis.kononenko.gtree2.api.AuthApi;
+import ru.kpfu.itis.kononenko.gtree2.dto.request.RefreshRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.UserLoginRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.UserRegisterRequest;
 import ru.kpfu.itis.kononenko.gtree2.enums.TokenStatus;
+import ru.kpfu.itis.kononenko.gtree2.exception.ExpiredTokenException;
 import ru.kpfu.itis.kononenko.gtree2.service.impl.MailService;
 import ru.kpfu.itis.kononenko.gtree2.service.impl.RefreshTokenService;
 import ru.kpfu.itis.kononenko.gtree2.service.impl.UserService;
 import ru.kpfu.itis.kononenko.gtree2.service.impl.VerificationTokenService;
 import ru.kpfu.itis.kononenko.gtree2.service.security.CustomUserDetails;
+import ru.kpfu.itis.kononenko.gtree2.service.security.CustomUserDetailsService;
 import ru.kpfu.itis.kononenko.gtree2.service.security.JwtTokenProvider;
 
 import java.time.Duration;
@@ -32,6 +35,7 @@ public class AuthController implements AuthApi{
     private final RefreshTokenService refreshTokenService;
     private final AuthenticationManager authManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
     public String signInGet() {
@@ -64,22 +68,7 @@ public class AuthController implements AuthApi{
         String refreshToken = jwtTokenProvider.generateRefreshToken(userDetails);
         refreshTokenService.save(userDetails.getUsername(), refreshToken);
 
-        // 4) Создаём HttpOnly.Cookie для accessToken
-        Cookie accessCookie = new Cookie("accessToken", accessToken);
-        accessCookie.setHttpOnly(true);
-        accessCookie.setSecure(false);
-        accessCookie.setPath("/");
-        accessCookie.setMaxAge((int) Duration.ofHours(24).getSeconds());
-
-        // 5) Создаём HttpOnly.Cookie для refreshToken
-        Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(false);
-        refreshCookie.setPath("/");
-        refreshCookie.setMaxAge((int) Duration.ofDays(7).getSeconds());
-
-        response.addCookie(accessCookie);
-        response.addCookie(refreshCookie);
+        setCookie(response, accessToken, refreshToken);
 
         return ResponseEntity.ok(
                 Map.of(
@@ -113,6 +102,58 @@ public class AuthController implements AuthApi{
             case ALREADY_USED -> ResponseEntity.badRequest().body("Токен уже был использован ранее.");
             default -> ResponseEntity.badRequest().body("Неверный токен подтверждения!");
         };
+    }
+
+    @Override
+    public ResponseEntity<?> refreshToken(RefreshRequest request,
+                                          HttpServletResponse response) {
+
+        String refreshToken = request.refreshToken();
+
+        try {
+            if (!jwtTokenProvider.isValid(refreshToken)) {
+                return ResponseEntity.status(401).build();
+            }
+        } catch (ExpiredTokenException ex) {
+            return ResponseEntity.status(401).build();
+        }
+
+        String username = jwtTokenProvider.getUsernameFromToken(refreshToken);
+        if (!refreshTokenService.isStored(refreshToken, username)) {
+            return ResponseEntity.status(401).build();
+        }
+
+        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
+
+        String newAccess = jwtTokenProvider.generateAccessToken(userDetails);
+        String newRefresh = jwtTokenProvider.generateRefreshToken(userDetails);
+        refreshTokenService.save(username, newRefresh);
+
+        setCookie(response, newAccess, newRefresh);
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "accessToken", newAccess,
+                        "refreshToken", newRefresh
+                )
+        );
+    }
+
+    public static void setCookie(HttpServletResponse response, String newAccess, String newRefresh) {
+        Cookie accessCookie = new Cookie("accessToken", newAccess);
+        accessCookie.setHttpOnly(true);
+        accessCookie.setSecure(false);
+        accessCookie.setPath("/");
+        accessCookie.setMaxAge((int) Duration.ofHours(24).getSeconds());
+
+        Cookie refreshCookie = new Cookie("refreshToken", newRefresh);
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(false);
+        refreshCookie.setPath("/");
+        refreshCookie.setMaxAge((int) Duration.ofDays(7).getSeconds());
+
+        response.addCookie(accessCookie);
+        response.addCookie(refreshCookie);
     }
 
     @Override

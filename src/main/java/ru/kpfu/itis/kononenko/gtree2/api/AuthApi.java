@@ -7,10 +7,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kpfu.itis.kononenko.gtree2.aop.RateLimit;
+import ru.kpfu.itis.kononenko.gtree2.dto.request.RefreshRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.UserLoginRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.UserRegisterRequest;
 
-import java.util.concurrent.TimeUnit;
 
 @RequestMapping("/auth")
 public interface AuthApi {
@@ -55,6 +55,15 @@ public interface AuthApi {
             @RequestBody
             @Valid
             UserRegisterRequest request
+    );
+
+    @PostMapping(value = "/refresh", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    ResponseEntity<?> refreshToken(
+            @RequestBody
+            @Valid
+            RefreshRequest request,
+            HttpServletResponse response
     );
 
 }

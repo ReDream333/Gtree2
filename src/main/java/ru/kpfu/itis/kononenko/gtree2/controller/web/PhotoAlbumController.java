@@ -23,7 +23,6 @@ public class PhotoAlbumController {
 
     private final NodeRepository nodeRepository;
     private final NodePhotoService photoService;
-    private final Gson gson = new Gson();
 
     @GetMapping
     public String albumPage(@RequestParam("nodeId") Long nodeId, Model model) {
@@ -31,7 +30,7 @@ public class PhotoAlbumController {
                 .orElseThrow(() -> new EntityNotFoundException("Node not found id=" + nodeId));
         model.addAttribute("nodeId", nodeId);
         model.addAttribute("nodeName", node.getFirstName() + " " + node.getLastName());
-        model.addAttribute("photos", gson.toJson(photoService.getPhotos(nodeId)));
+        model.addAttribute("photos", photoService.getPhotos(nodeId));
         return "photo-album";
     }
 

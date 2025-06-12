@@ -23,24 +23,25 @@ public class MinioConfig {
                 .build();
     }
 
-    @Bean
-    public CommandLineRunner ensureBucketExists(MinioClient minioClient) {
-        return args -> {
-            boolean exists = minioClient.bucketExists(
-                    BucketExistsArgs.builder()
-                            .bucket(properties.getBucket())
-                            .build()
-            );
-            if (!exists) {
-                minioClient.makeBucket(
-                        MakeBucketArgs.builder()
-                                .bucket(properties.getBucket())
-                                .build()
-                );
-                System.out.printf("Bucket '%s' created.%n", properties.getBucket());
-            } else {
-                System.out.printf("Bucket '%s' already exists.%n", properties.getBucket());
-            }
-        };
-    }
+    //TOdo создавать с доступом access
+//    @Bean
+//    public CommandLineRunner ensureBucketExists(MinioClient minioClient) {
+//        return args -> {
+//            boolean exists = minioClient.bucketExists(
+//                    BucketExistsArgs.builder()
+//                            .bucket(properties.getBucket())
+//                            .build()
+//            );
+//            if (!exists) {
+//                minioClient.makeBucket(
+//                        MakeBucketArgs.builder()
+//                                .bucket(properties.getBucket())
+//                                .build()
+//                );
+//                System.out.printf("Bucket '%s' created.%n", properties.getBucket());
+//            } else {
+//                System.out.printf("Bucket '%s' already exists.%n", properties.getBucket());
+//            }
+//        };
+//    }
 }

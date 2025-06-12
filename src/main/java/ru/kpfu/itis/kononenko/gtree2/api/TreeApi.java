@@ -3,7 +3,7 @@ package ru.kpfu.itis.kononenko.gtree2.api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import ru.kpfu.itis.kononenko.gtree2.dto.TreeForm;
+import ru.kpfu.itis.kononenko.gtree2.dto.request.TreeFormRequest;
 
 import java.util.Map;
 
@@ -16,7 +16,7 @@ public interface TreeApi {
             @AuthenticationPrincipal
             String jwt,
             @RequestBody
-            TreeForm dto
+            TreeFormRequest dto
     );
 
     @GetMapping("/{id}/nodes")

@@ -92,6 +92,9 @@ function initButtons() {
             localStorage.clear();
             location.href = "/";
         });
+
+    document.getElementById("chat_button")
+        .addEventListener("click", () => location.href="/chat");
 }
 
 /* ---------- POST /saveProfilePhoto ------------------------- */

@@ -29,10 +29,8 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final RedirectEntryPoint redirectEntryPoint;
     private final String AUTH_ENTRY_POINTS = "/auth/**";
-    private final String SING_IN_ENTRY_POINT = "/auth/sign-in";
     private final String SING_UP_ENTRY_POINT = "/auth/sign-up";
     private final String INDEX_ENTRY_POINT = "/";
-    private final String PROFILE_ENTRY_POINT = "/profile/**";
     private final String USER_API_ENTRY_POINT = "/users/api/**";
 
     @Bean
@@ -67,8 +65,7 @@ public class SecurityConfig {
                                 AUTH_ENTRY_POINTS,
                                 INDEX_ENTRY_POINT,
                                 SING_UP_ENTRY_POINT,
-                                USER_API_ENTRY_POINT,
-                                PROFILE_ENTRY_POINT
+                                USER_API_ENTRY_POINT
                                 ).permitAll()
                         .anyRequest().authenticated()
                 )

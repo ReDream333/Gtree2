@@ -7,6 +7,7 @@ const nodeInfoPanel = document.getElementById("nodeInfoPanel");
 const nodeName = document.getElementById("nodeName");
 const nodeBirthDate = document.getElementById("nodeBirthDate");
 const nodeDeathDate = document.getElementById("nodeDeathDate");
+const nodeZodiac = document.getElementById("nodeZodiac");
 const nodeViewPhoto = document.getElementById("nodeViewPhoto");
 const deleteNodeButton = document.getElementById("deleteNodeButton");
 const editNodeButton = document.getElementById("editNodeButton");
@@ -76,6 +77,7 @@ function saveNodeData(nodeData) {
                 myDiagram.model.setDataProperty(nodeDatum, "death",    updatedNode.death    || "");
                 myDiagram.model.setDataProperty(nodeDatum, "comment",  updatedNode.comment  || "");
                 myDiagram.model.setDataProperty(nodeDatum, "photo",    updatedNode.photo    || "");
+                myDiagram.model.setDataProperty(nodeDatum, "zodiacSign", updatedNode.zodiacSign || "");
             }
 
             myDiagram.model.commitTransaction("updateNode");
@@ -106,6 +108,7 @@ function openNodeInfoPanel(nodeData) {
     nodeName.textContent = `${nodeData.fullName}`;
     nodeBirthDate.textContent = nodeData.birthday!== "null" ?  nodeData.birthday : "Неизвестно";
     nodeDeathDate.textContent = (nodeData.death !== "null" && nodeData.death != null && nodeData.death) ? nodeData.death : "Жив/Неизвестно о смерти";
+    nodeZodiac.textContent = nodeData.zodiacSign ? nodeData.zodiacSign : "-";
     deleteNodeButton.style.display = nodeData.isLeaf ? "inline-block" : "none";
 
     nodeViewMode.style.display = "block";

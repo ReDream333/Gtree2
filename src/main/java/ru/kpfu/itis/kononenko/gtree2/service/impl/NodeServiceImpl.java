@@ -6,12 +6,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kpfu.itis.kononenko.gtree2.dto.response.NodeResponse;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.NodeFormRequest;
+import ru.kpfu.itis.kononenko.gtree2.dto.response.ZodiacStatsResponse;
 import ru.kpfu.itis.kononenko.gtree2.entity.Node;
 import ru.kpfu.itis.kononenko.gtree2.entity.Tree;
 import ru.kpfu.itis.kononenko.gtree2.mapper.NodeMapper;
 import ru.kpfu.itis.kononenko.gtree2.repository.NodeRepository;
 import ru.kpfu.itis.kononenko.gtree2.repository.TreeRepository;
 import ru.kpfu.itis.kononenko.gtree2.service.NodeService;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import static ru.kpfu.itis.kononenko.gtree2.utils.ZodiacUtils.getAdvice;
+import static ru.kpfu.itis.kononenko.gtree2.utils.ZodiacUtils.getZodiacSign;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +27,7 @@ public class NodeServiceImpl implements NodeService {
     private final NodeRepository nodeRepository;
     private final TreeRepository treeRepository;
     private final NodeMapper nodeMapper;
+
 
     @Override
     public NodeResponse get(Long nodeId) {
@@ -36,6 +43,7 @@ public class NodeServiceImpl implements NodeService {
 
         Node node = nodeMapper.toEntity(form);
         node.setTree(tree);
+        node.setZodiacSign(getZodiacSign(node.getBirthDate()));
         Node saved = nodeRepository.save(node);
 
         Long childId = form.childId();
@@ -55,12 +63,30 @@ public class NodeServiceImpl implements NodeService {
         Node node = nodeRepository.findById(nodeId)
                 .orElseThrow(() -> new IllegalArgumentException("Node not found: " + nodeId));
         nodeMapper.updateFromRequest(form, node);
+        node.setZodiacSign(getZodiacSign(node.getBirthDate()));
         return nodeMapper.toResponse(node);
     }
 
     @Override
     public void delete(Long nodeId) {
         nodeRepository.deleteById(nodeId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ZodiacStatsResponse getZodiacStats(Long treeId) {
+        List<Object[]> raw = nodeRepository.countZodiacSignsByTreeId(treeId);
+        Map<String, Long> stats = raw.stream()
+                .collect(Collectors.toMap(r -> (String) r[0], r -> (Long) r[1]));
+
+        String dominant = stats.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+
+        String message = getAdvice(dominant);
+
+        return new ZodiacStatsResponse(stats, message);
     }
 
 

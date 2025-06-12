@@ -238,7 +238,8 @@ function init() {
                         gender: newParent.gender,
                         birthday: newParent.birthday || "Неизвестно",
                         death: newParent.death,
-                        comment: newParent.comment
+                        comment: newParent.comment,
+                        zodiacSign: newParent.zodiacSign
                     });
 
                     // Добавляем связь между родителем и ребенком

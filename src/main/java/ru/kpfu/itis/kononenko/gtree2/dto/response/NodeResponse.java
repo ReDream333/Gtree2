@@ -11,6 +11,8 @@ public record NodeResponse(
     String birthday,
     String death,
     String comment,
-    String photo
+    String photo,
+    String zodiacSign
+
 ) {
 }

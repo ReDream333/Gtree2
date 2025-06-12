@@ -21,6 +21,13 @@
   </div>
 </div>
 
+<div style="margin-top:20px; text-align:center;">
+  <button id="zodiacStatsBtn">Показать статистику знаков</button>
+  <canvas id="zodiacChart" style="max-width:400px; display:none; margin:auto;"></canvas>
+  <p id="zodiacMessage"></p>
+</div>
+
+
 <!-- Панель информации о ноде -->
 <div id="nodeInfoPanel">
   <button id="closePanelButton" style="float: right;">✖</button>
@@ -38,6 +45,7 @@
   <div id="nodeViewMode">
     <p>Дата рождения: <span id="nodeBirthDate">Неизвестно</span></p>
     <p>Дата смерти: <span id="nodeDeathDate">Неизвестно</span></p>
+    <p>Знак зодиака: <span id="nodeZodiac">-</span></p>
 
     <button id="editNodeButton">Редактировать</button>
     <button id="biographyButton">Биография</button>
@@ -129,6 +137,8 @@
 <script th:src="@{/js/congrats.js}"></script>
 <script th:src="@{/js/treeDiagram.js}"></script> <!-- Создаёт диаграмму -->
 <script th:src="@{/js/nodeInfo.js}"></script>    <!-- Добавляет функционал нод -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:src="@{/js/zodiacStats.js}"></script>
 
 </body>
 </html>

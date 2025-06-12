@@ -5,8 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kpfu.itis.kononenko.gtree2.dto.response.NodeResponse;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.NodeFormRequest;
+import ru.kpfu.itis.kononenko.gtree2.dto.response.ZodiacStatsResponse;
+import org.springframework.format.annotation.DateTimeFormat;
+import java.time.LocalDate;
 
 import ru.kpfu.itis.kononenko.gtree2.service.NodeService;
+
+import static ru.kpfu.itis.kononenko.gtree2.utils.ZodiacUtils.getZodiacSign;
 
 @RestController
 @RequestMapping("api/trees/{treeId}/nodes")
@@ -56,6 +61,17 @@ public class NodeRestController {
         nodeService.delete(nodeId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/zodiac")
+    public ResponseEntity<String> getZodiac(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return ResponseEntity.ok(getZodiacSign(date));
+    }
+
+    @GetMapping("/zodiac-stat")
+    public ResponseEntity<ZodiacStatsResponse> zodiacStat(@PathVariable Long treeId) {
+        return ResponseEntity.ok(nodeService.getZodiacStats(treeId));
+    }
+
 
 
 }

@@ -14,6 +14,7 @@ public interface NodeMapper {
     @Mapping(target = "death",    expression = "java(node.getDeathDate() != null ? node.getDeathDate().toString() : \"\")")
     @Mapping(target = "comment",  source = "comment")
     @Mapping(target = "photo",    source = "photoUrl")
+    @Mapping(target = "zodiacSign", source = "zodiacSign")
     NodeResponse toResponse(Node node);
 
     Node toEntity(NodeFormRequest nodeDto);

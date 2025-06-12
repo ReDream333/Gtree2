@@ -42,6 +42,10 @@ public class Node {
         @Column(name = "comment")
         private String comment;
 
+        @Column(name = "zodiac_sign")
+        private String zodiacSign;
+
+
         @Column(name = "photo_url")
         private String photoUrl;
 

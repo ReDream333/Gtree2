@@ -3,6 +3,7 @@ package ru.kpfu.itis.kononenko.gtree2.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -11,6 +12,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import ru.kpfu.itis.kononenko.gtree2.dto.response.MessageResponse;
 import ru.kpfu.itis.kononenko.gtree2.service.DialogService;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -29,13 +31,18 @@ public class PrivateChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        String path = Optional.ofNullable(session.getUri()).map(u -> u.getPath()).orElse("");
+        String path = Optional.ofNullable(session.getUri()).map(URI::getPath).orElse("");
         String username = path.substring(path.lastIndexOf('/') + 1);
-        if (session.getPrincipal() instanceof Authentication) {
-            Long convId = dialogService.ensureConversation(username);
-            conversations.computeIfAbsent(convId, k -> ConcurrentHashMap.newKeySet()).add(session);
-            sessionConv.put(session, convId);
-            sessionTarget.put(session, username);
+        if (session.getPrincipal() instanceof Authentication auth) {
+            SecurityContextHolder.getContext().setAuthentication(auth);
+            try {
+                Long convId = dialogService.ensureConversation(username);
+                conversations.computeIfAbsent(convId, k -> ConcurrentHashMap.newKeySet()).add(session);
+                sessionConv.put(session, convId);
+                sessionTarget.put(session, username);
+            } finally {
+                SecurityContextHolder.clearContext();
+            }
         }
     }
 
@@ -46,11 +53,18 @@ public class PrivateChatWebSocketHandler extends TextWebSocketHandler {
         if (target == null || convId == null) {
             return;
         }
-        MessageResponse resp = dialogService.sendMessage(target, message.getPayload());
-        String json = mapper.writeValueAsString(resp);
-        for (WebSocketSession s : conversations.getOrDefault(convId, Set.of())) {
-            if (s.isOpen()) {
-                s.sendMessage(new TextMessage(json));
+        if (session.getPrincipal() instanceof Authentication auth) {
+            SecurityContextHolder.getContext().setAuthentication(auth);
+            try {
+                MessageResponse resp = dialogService.sendMessage(target, message.getPayload());
+                String json = mapper.writeValueAsString(resp);
+                for (WebSocketSession s : conversations.getOrDefault(convId, Set.of())) {
+                    if (s.isOpen()) {
+                        s.sendMessage(new TextMessage(json));
+                    }
+                }
+            } finally {
+                SecurityContextHolder.clearContext();
             }
         }
     }

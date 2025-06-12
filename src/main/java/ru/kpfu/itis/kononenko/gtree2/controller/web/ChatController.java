@@ -10,4 +10,10 @@ public class ChatController {
     public String chatPage() {
         return "chat";
     }
+
+
+    @GetMapping("/dialog/{username}")
+    public String dialogPage() {
+        return "dialog";
+    }
 }

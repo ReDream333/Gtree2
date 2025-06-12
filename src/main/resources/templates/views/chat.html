@@ -4,16 +4,21 @@
     <meta charset="UTF-8">
     <title>Общий чат</title>
     <link rel="stylesheet" href="/css/profile.css">
+    <link rel="stylesheet" href="/css/chat.css">
 </head>
 <body>
 
-<div id="messages" style="height:300px; overflow-y:auto; border:1px solid #ccc; padding:10px;"></div>
+<div id="particles-js"></div>
+<div class="chat-container">
+    <div id="messages" class="messages"></div>
+    <form id="chat-form" class="chat-form">
+        <input id="chat-input" type="text" autocomplete="off" placeholder="Введите сообщение...">
+        <button type="submit">Отправить</button>
+    </form>
+</div>
 
-<form id="chat-form">
-    <input id="chat-input" type="text" autocomplete="off" style="width:80%;">
-    <button type="submit">Отправить</button>
-</form>
-
+<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+<script src="/js/leafFall.js"></script>
 <script src="/js/chat.js"></script>
 
 </body>

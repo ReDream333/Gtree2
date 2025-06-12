@@ -30,3 +30,13 @@ function fillProfile(u){
         d.toLocaleDateString("ru-RU",
             {year:"numeric", month:"long", day:"numeric"});
 }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('btn-send-message');
+    if (btn) {
+        btn.addEventListener('click', () => {
+            location.href = `/dialog/${encodeURIComponent(username)}`;
+        });
+    }
+});

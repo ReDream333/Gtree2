@@ -1,6 +1,7 @@
 package ru.kpfu.itis.kononenko.gtree2.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -29,6 +30,7 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
     private final UserMapper userMapper;
+    private final CacheManager cacheManager;
 
 
     @Transactional
@@ -43,7 +45,9 @@ public class UserService {
 
         user.getRoles().add(userRole);
 
-        return userRepository.save(user).getId();
+        Long id = userRepository.save(user).getId();
+        Objects.requireNonNull(cacheManager.getCache("users")).evict(user.getUsername());
+        return id;
     }
 
     public List<UserResponse> getAll(int page, int size) {
@@ -75,6 +79,7 @@ public class UserService {
     @Transactional
     public UserResponse updateCurrent(UserRequest request) {
         User user = getAuthenticatedUser();
+        String oldUsername = user.getUsername();
         String oldEmail = user.getEmail();
         String newEmail = request.email();
 
@@ -84,6 +89,8 @@ public class UserService {
             user.setEmailVerified(false);
         }
         userRepository.save(user);
+        Objects.requireNonNull(cacheManager.getCache("users")).evict(oldUsername);
+        Objects.requireNonNull(cacheManager.getCache("users")).evict(user.getUsername());
         return userMapper.toResponse(user);
     }
 
@@ -101,12 +108,14 @@ public class UserService {
 
     public void deleteByUsername(String username) {
         userRepository.deleteByUsername(username);
+        Objects.requireNonNull(cacheManager.getCache("users")).evict(username);
     }
 
     @Transactional
     public void deleteCurrent() {
         User user = getAuthenticatedUser();
         userRepository.delete(user);
+        Objects.requireNonNull(cacheManager.getCache("users")).evict(user.getUsername());
     }
 }
 

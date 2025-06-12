@@ -83,6 +83,15 @@ function initButtons() {
     /* редактировать (переход на форму) */
     document.getElementById("edit_button")
         .addEventListener("click", () => location.href="/settings");
+
+
+    /* выход из аккаунта */
+    document.getElementById("logout_button")
+        .addEventListener("click", async () => {
+            await fetch("/auth/sign-out");
+            localStorage.clear();
+            location.href = "/";
+        });
 }
 
 /* ---------- POST /saveProfilePhoto ------------------------- */

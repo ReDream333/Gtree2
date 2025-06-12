@@ -1,12 +1,15 @@
 package ru.kpfu.itis.kononenko.gtree2.controller;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import ru.kpfu.itis.kononenko.gtree2.api.AuthApi;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.RefreshRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.UserLoginRequest;
@@ -49,12 +52,42 @@ public class AuthController implements AuthApi{
 
     @Override
     public String signOutGet() {
-        return "";
+        ServletRequestAttributes attr =
+                (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+
+        HttpServletRequest request = attr.getRequest();
+        HttpServletResponse response = attr.getResponse();
+
+        String refresh = null;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    refresh = cookie.getValue();
+                }
+            }
+        }
+
+        if (refresh != null) {
+            try {
+                String username = jwtTokenProvider.getUsernameFromToken(refresh);
+                refreshTokenService.invalidate(username);
+            } catch (Exception ignored) {
+            }
+        }
+
+        clearCookie(response, "accessToken");
+        clearCookie(response, "refreshToken");
+
+        return "redirect:/";
     }
 
-    @Override
-    public String refreshTokenGet() {
-        return "";
+    private static void clearCookie(HttpServletResponse response, String name) {
+        Cookie cookie = new Cookie(name, null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 
 

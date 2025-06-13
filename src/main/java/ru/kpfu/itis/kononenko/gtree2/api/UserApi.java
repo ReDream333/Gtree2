@@ -1,5 +1,7 @@
 package ru.kpfu.itis.kononenko.gtree2.api;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -14,8 +16,10 @@ import java.util.List;
 
 @RequestMapping("/users/api")
 @RestController
-//@CrossOrigin(origins = "*", allowedHeaders = "*")???
+@Tag(name = "Users")
 public interface UserApi {
+
+    @Operation(summary = "Get all users")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     List<UserResponse> getAll(
@@ -27,9 +31,11 @@ public interface UserApi {
             Integer limit
     );
 
+    @Operation(summary = "Get current user")
     @GetMapping("/me")
     UserResponse getCurrent();
 
+    @Operation(summary = "Update current user")
     @PutMapping("/me")
     UserResponse updateCurrent(
             @RequestBody
@@ -37,10 +43,12 @@ public interface UserApi {
             UserRequest request
     );
 
+    @Operation(summary = "Delete current user")
     @DeleteMapping("/me")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteCurrent();
 
+    @Operation(summary = "Update avatar for current user")
     @PutMapping("/me/avatar")
     String updateCurrentAvatar(
             @RequestPart("file")
@@ -48,6 +56,7 @@ public interface UserApi {
             MultipartFile file
     );
 
+    @Operation(summary = "Get user by username")
     @GetMapping("/{username}")
     @ResponseStatus(HttpStatus.OK)
     UserResponse getByUsername(
@@ -56,6 +65,7 @@ public interface UserApi {
     );
 
 
+    @Operation(summary = "Delete user by username")
     @DeleteMapping("/{username}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteByUsername(

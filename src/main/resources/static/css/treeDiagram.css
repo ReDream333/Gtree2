@@ -378,6 +378,45 @@ canvas.confetti-canvas {
     background-color: #4E9A3C;
 }
 
+/* Zodiac stats modal */
+#zodiacModal canvas {
+    width: 300px;
+    height: 300px;
+    display: block;
+    margin: 20px auto;
+}
+
+#zodiacModalClose {
+    background: transparent;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+#zodiacStatsBtn {
+    display: inline-block;
+    padding: 0.6em 1.2em;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #6ABE4E 0%, #4E9A3C 100%);
+    border: none;
+    border-radius: 0.5em;
+    box-shadow: 0 4px 10px rgba(0, 13, 255, 0.3);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#zodiacStatsBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 13, 255, 0.5);
+}
+
+#zodiacStatsBtn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(0, 13, 255, 0.2);
+}
+
 
 
 

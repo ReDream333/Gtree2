@@ -20,6 +20,7 @@ public interface NodeRepository extends JpaRepository<Node, Long> {
     List<RelationResponse> findRelationsByTreeId(@Param("treeId") Long treeId);
 
 
-    @Query("SELECT n.zodiacSign, COUNT(n) FROM Node n WHERE n.tree.id = :treeId GROUP BY n.zodiacSign")
+    @Query("SELECT n.zodiacSign, COUNT(n) FROM Node n WHERE n.tree.id = :treeId and (n.zodiacSign is not null) GROUP BY n.zodiacSign")
+
     List<Object[]> countZodiacSignsByTreeId(@Param("treeId") Long treeId);
 }

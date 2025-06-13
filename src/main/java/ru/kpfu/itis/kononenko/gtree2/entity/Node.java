@@ -39,7 +39,7 @@ public class Node {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         private LocalDate  deathDate;
 
-        @Column(name = "comment")
+        @Column(name = "comment", length = 500)
         private String comment;
 
         @Column(name = "zodiac_sign")

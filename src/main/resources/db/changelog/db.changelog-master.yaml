@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/v1/DDL/12062025-create_messages_tables.sql
   - include:
       file: db/changelog/v1/DDL/12062025-add_zodiac_sign.sql
+  - include:
+      file: db/changelog/v1/DDL/12062025-alter_comment_length.sql

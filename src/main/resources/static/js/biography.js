@@ -3,10 +3,13 @@ const charCount = document.getElementById("charCount");
 const saveStatus = document.getElementById("saveStatus");
 const saveButton = document.getElementById("saveButton");
 const clearButton = document.getElementById("clearButton");
+const autoFillButton = document.getElementById("autoFillButton");
 
 const openScrollButton = document.getElementById("openScrollButton");
 const closeScrollButton = document.getElementById("closeScrollButton");
 const scrollContainer = document.getElementById("scrollContainer");
+
+charCount.textContent = `${bioInput.value.length} символов`;
 
 // Обновление количества символов
 bioInput.addEventListener("input", () => {
@@ -47,6 +50,34 @@ clearButton.addEventListener("click", () => {
         console.log("Удаление отменено пользователем.");
     }
 });
+
+
+// Автозаполнение биографии из Википедии
+let wikiBiographies = [];
+let wikiIndex = 0;
+autoFillButton.addEventListener("click", async () => {
+    if (wikiBiographies.length === 0) {
+        try {
+            const resp = await fetch(`biography/auto?nodeId=${nodeId}`);
+            wikiBiographies = await resp.json();
+            wikiIndex = 0;
+            autoFillButton.textContent = `Автозаполнение - ${wikiBiographies.length}`;
+        } catch (e) {
+            console.error(e);
+            return;
+        }
+    }
+    if (wikiBiographies.length > 0) {
+        bioInput.value = wikiBiographies[wikiIndex];
+        charCount.textContent = `${bioInput.value.length} символов`;
+        saveStatus.textContent = "Есть несохранённые изменения";
+        wikiIndex = (wikiIndex + 1) % wikiBiographies.length;
+        let remaining = wikiBiographies.length - wikiIndex;
+        if (remaining === 0) remaining = wikiBiographies.length;
+        autoFillButton.textContent = `Автозаполнение - ${remaining}`;
+    }
+});
+
 // Летопись
 const overlay = document.createElement("div");
 overlay.classList.add("overlay");

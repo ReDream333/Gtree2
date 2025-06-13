@@ -105,6 +105,16 @@ main {
     transform: translateY(-2px);
 }
 
+#autoFillButton {
+    background-color: #ffa726; /* Оранжевый */
+    color: white;
+}
+
+#autoFillButton:hover {
+    background-color: #fb8c00;
+    transform: translateY(-2px);
+}
+
 /* Кнопка "Очистить" */
 #clearButton {
     background-color: #e57373; /* Красный */

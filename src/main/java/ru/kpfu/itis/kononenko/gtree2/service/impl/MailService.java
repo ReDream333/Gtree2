@@ -7,9 +7,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import ru.kpfu.itis.kononenko.gtree2.aop.Retry;
+import ru.kpfu.itis.kononenko.gtree2.config.property.MailProps;
 import ru.kpfu.itis.kononenko.gtree2.entity.User;
 import ru.kpfu.itis.kononenko.gtree2.entity.VerificationToken;
-import ru.kpfu.itis.kononenko.gtree2.properties.MailProps;
 
 @Slf4j
 @RequiredArgsConstructor

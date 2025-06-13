@@ -70,11 +70,13 @@ dependencies {
     testImplementation 'org.testcontainers:junit-jupiter'
 
     implementation "org.liquibase:liquibase-core:4.20.0"
-
     implementation 'com.bucket4j:bucket4j-core:8.10.1'
 
     // Minio client for photo storage
     implementation "io.minio:minio:${minioVersion}"
+
+    // HTTP client for Wikipedia requests
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 
 }
 

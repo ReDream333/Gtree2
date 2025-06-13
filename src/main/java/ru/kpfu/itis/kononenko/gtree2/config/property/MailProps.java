@@ -1,4 +1,4 @@
-package ru.kpfu.itis.kononenko.gtree2.properties;
+package ru.kpfu.itis.kononenko.gtree2.config.property;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

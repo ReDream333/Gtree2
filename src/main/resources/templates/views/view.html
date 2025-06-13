@@ -53,7 +53,7 @@
   <div id="nodeViewMode">
     <p>Дата рождения: <span id="nodeBirthDate">Неизвестно</span></p>
     <p>Дата смерти: <span id="nodeDeathDate">Неизвестно</span></p>
-    <p>Знак зодиака: <span id="nodeZodiac">-</span></p>
+    <p>Знак зодиака: <span id="nodeZodiac">-</span><span id="nodeZodiacIcon" class="zodiac-icon"></span></p>
     <p id="nodeComment"></p>
 
     <button id="editNodeButton">Редактировать</button>
@@ -61,6 +61,7 @@
     <button id="photoAlbumButton">Фото-альбом</button>
     <button id="addParentButton" disabled>Добавить родителя</button>
     <button id="deleteNodeButton">Удалить</button>
+    <button id="compatButton">Проверить совместимость</button>
   </div>
 
   <!-- Режим редактирования -->
@@ -117,6 +118,14 @@
       Добавляйте своих родителей и родственников!
     </p>
     <button id="closeModalButton" class="modal-button">Круто!</button>
+  </div>
+</div>
+
+<!-- Модальное окно для совместимости -->
+<div id="compatModal" class="modal" style="display:none;">
+  <div class="modal-content" style="position:relative;">
+    <button id="compatModalClose" style="position:absolute;top:5px;right:5px;">✖</button>
+    <p id="compatResultText"></p>
   </div>
 </div>
 

@@ -1,6 +1,5 @@
 package ru.kpfu.itis.kononenko.gtree2.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +8,7 @@ import ru.kpfu.itis.kononenko.gtree2.dto.request.NodeFormRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.response.ZodiacStatsResponse;
 import ru.kpfu.itis.kononenko.gtree2.entity.Node;
 import ru.kpfu.itis.kononenko.gtree2.entity.Tree;
+import ru.kpfu.itis.kononenko.gtree2.exception.NotFoundException;
 import ru.kpfu.itis.kononenko.gtree2.mapper.NodeMapper;
 import ru.kpfu.itis.kononenko.gtree2.repository.NodeRepository;
 import ru.kpfu.itis.kononenko.gtree2.repository.TreeRepository;
@@ -35,14 +35,14 @@ public class NodeServiceImpl implements NodeService {
     @Override
     public NodeResponse get(Long nodeId) {
         Node node = nodeRepository.findById(nodeId)
-                .orElseThrow(() -> new EntityNotFoundException("Node not found with id=%s".formatted(nodeId)));
+                .orElseThrow(() -> new NotFoundException("Node not found with id=%s".formatted(nodeId)));
         return nodeMapper.toResponse(node);
     }
 
     @Override
     public NodeResponse save(Long treeId, NodeFormRequest form) {
         Tree tree = treeRepository.findById(treeId)
-                .orElseThrow(() -> new IllegalArgumentException("Tree not found with id=%s".formatted(treeId)));
+                .orElseThrow(() -> new NotFoundException("Tree not found with id=%s".formatted(treeId)));
 
         Node node = nodeMapper.toEntity(form);
         node.setTree(tree);
@@ -59,7 +59,7 @@ public class NodeServiceImpl implements NodeService {
 
         if (childId != null) {
             Node child = nodeRepository.findById(childId)
-                    .orElseThrow(() -> new IllegalArgumentException("Child not found id=" + childId));
+                    .orElseThrow(() -> new NotFoundException("Child not found id=" + childId));
             saved.setChild(child);
             saved = nodeRepository.save(saved);
         }
@@ -70,7 +70,7 @@ public class NodeServiceImpl implements NodeService {
     @Override
     public NodeResponse update(Long nodeId, NodeFormRequest form) {
         Node node = nodeRepository.findById(nodeId)
-                .orElseThrow(() -> new IllegalArgumentException("Node not found: " + nodeId));
+                .orElseThrow(() -> new NotFoundException("Node not found: " + nodeId));
         nodeMapper.updateFromRequest(form, node);
         node.setZodiacSign(getZodiacSign(node.getBirthDate()));
         return nodeMapper.toResponse(node);

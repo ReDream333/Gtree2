@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.TreeCreateRequest;
 import ru.kpfu.itis.kononenko.gtree2.entity.Tree;
+import ru.kpfu.itis.kononenko.gtree2.exception.NotFoundException;
 import ru.kpfu.itis.kononenko.gtree2.mapper.NodeMapper;
 import ru.kpfu.itis.kononenko.gtree2.mapper.TreeMapper;
 import ru.kpfu.itis.kononenko.gtree2.repository.NodeRepository;
@@ -24,6 +25,12 @@ public class TreeServiceImpl implements TreeService {
     private final TreeMapper treeMapper;
     private final NodeMapper nodeMapper;
     private final ObjectMapper mapper = new ObjectMapper();
+
+    @Override
+    public Tree getTree(Long id) {
+        return treeRepository.findById(id)
+                .orElseThrow(()-> new NotFoundException("Дерево не найдено с id=%s".formatted(id)));
+    }
 
     @Override
     public long createTree(TreeCreateRequest request) {

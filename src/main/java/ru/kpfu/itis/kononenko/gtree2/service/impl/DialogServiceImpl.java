@@ -9,6 +9,7 @@ import ru.kpfu.itis.kononenko.gtree2.dto.response.MessageResponse;
 import ru.kpfu.itis.kononenko.gtree2.entity.Conversation;
 import ru.kpfu.itis.kononenko.gtree2.entity.PrivateMessage;
 import ru.kpfu.itis.kononenko.gtree2.entity.User;
+import ru.kpfu.itis.kononenko.gtree2.exception.NotFoundException;
 import ru.kpfu.itis.kononenko.gtree2.repository.ConversationRepository;
 import ru.kpfu.itis.kononenko.gtree2.repository.PrivateMessageRepository;
 import ru.kpfu.itis.kononenko.gtree2.repository.UserRepository;
@@ -80,7 +81,7 @@ public class DialogServiceImpl implements DialogService {
 
     private User getUser(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     private User getCurrentUser() {

@@ -82,6 +82,8 @@ public class TreeController {
             Model model)
     {
 
+        treeService.getTree(treeId);
+
         String nodesJson = treeService.nodesAsJson(treeId);
         String linksJson = treeService.relationsAsJson(treeId);
 

@@ -15,6 +15,7 @@ import ru.kpfu.itis.kononenko.gtree2.dto.response.UserResponse;
 import ru.kpfu.itis.kononenko.gtree2.entity.ERole;
 import ru.kpfu.itis.kononenko.gtree2.entity.Role;
 import ru.kpfu.itis.kononenko.gtree2.entity.User;
+import ru.kpfu.itis.kononenko.gtree2.exception.NotFoundException;
 import ru.kpfu.itis.kononenko.gtree2.mapper.UserMapper;
 import ru.kpfu.itis.kononenko.gtree2.repository.RoleRepository;
 import ru.kpfu.itis.kononenko.gtree2.repository.UserRepository;
@@ -41,7 +42,7 @@ public class UserService {
         user.setEmailVerified(false);
 
         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                .orElseThrow(() -> new NotFoundException("Error: Role is not found."));
 
         user.getRoles().add(userRole);
 
@@ -64,7 +65,7 @@ public class UserService {
 
     public UserResponse getByUsername(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Пользователя с таким username нет"));
+                .orElseThrow(() -> new NotFoundException("Пользователя с таким username нет"));
         return userMapper.toUserResponse(user);
     }
 

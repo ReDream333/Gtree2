@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface TreeService {
 
+    Tree getTree(Long id);
+
     long createTree(TreeCreateRequest request);
 
     List<Tree> getPublicTrees();

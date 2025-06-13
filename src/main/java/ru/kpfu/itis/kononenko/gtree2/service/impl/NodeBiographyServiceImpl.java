@@ -1,10 +1,10 @@
 package ru.kpfu.itis.kononenko.gtree2.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kpfu.itis.kononenko.gtree2.entity.NodeBiography;
+import ru.kpfu.itis.kononenko.gtree2.exception.NotFoundException;
 import ru.kpfu.itis.kononenko.gtree2.repository.NodeBiographyRepository;
 import ru.kpfu.itis.kononenko.gtree2.repository.NodeRepository;
 import ru.kpfu.itis.kononenko.gtree2.service.NodeBiographyService;
@@ -27,7 +27,7 @@ public class NodeBiographyServiceImpl implements NodeBiographyService {
     @Override
     public void save(Long nodeId, String biography) {
         nodeRepository.findById(nodeId)
-                .orElseThrow(() -> new EntityNotFoundException("Node not found id=" + nodeId));
+                .orElseThrow(() -> new NotFoundException("Node not found id=" + nodeId));
         NodeBiography entity = biographyRepository.findByNodeId(nodeId)
                 .orElseGet(NodeBiography::new);
         entity.setNodeId(nodeId);

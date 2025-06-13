@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface PrivateMessageRepository extends JpaRepository<PrivateMessage, Long> {
     List<PrivateMessage> findByConversationOrderByCreatedAt(Conversation conversation);
+    void deleteAllByConversation(Conversation conversation);
 }

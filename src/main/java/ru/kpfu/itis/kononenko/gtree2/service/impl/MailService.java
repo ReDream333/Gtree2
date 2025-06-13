@@ -31,7 +31,7 @@ public class MailService {
         sendSimpleEmail(toEmail, subject, message);
     }
 
-    @Retry(attempts = 5, backoff = 300, on = { java.io.IOException.class })
+//    @Retry(attempts = 5, backoff = 300, on = { java.io.IOException.class })
     public void sendSimpleEmail(String toEmail, String subject, String message) {
         try {
             SimpleMailMessage msg = new SimpleMailMessage();

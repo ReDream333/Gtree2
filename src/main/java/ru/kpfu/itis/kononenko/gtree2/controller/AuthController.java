@@ -8,12 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import ru.kpfu.itis.kononenko.gtree2.api.AuthApi;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.RefreshRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.UserLoginRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.UserRegisterRequest;
+import ru.kpfu.itis.kononenko.gtree2.entity.User;
+import ru.kpfu.itis.kononenko.gtree2.entity.VerificationToken;
 import ru.kpfu.itis.kononenko.gtree2.enums.TokenStatus;
 import ru.kpfu.itis.kononenko.gtree2.exception.ExpiredTokenException;
 import ru.kpfu.itis.kononenko.gtree2.service.impl.MailService;
@@ -39,6 +42,13 @@ public class AuthController implements AuthApi{
     private final AuthenticationManager authManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomUserDetailsService userDetailsService;
+
+
+    @GetMapping("/sing-success")
+    public String signSuccessPage() {
+        return "sing-success";
+    }
+
 
     @Override
     public String signInGet() {
@@ -115,7 +125,9 @@ public class AuthController implements AuthApi{
     @Override
     public ResponseEntity<?> signUpPost(UserRegisterRequest request) {
 
-        userService.save(request);
+        User user = userService.save(request);
+        VerificationToken token = tokenService.createToken(user);
+        mailService.sendVerificationEmail(user, token);
 
         return ResponseEntity.ok(
                 Map.of(
@@ -127,14 +139,19 @@ public class AuthController implements AuthApi{
 
 
 
-    public ResponseEntity<String> confirmAccount(String token) {
+    public String confirmAccount(String token) {
         TokenStatus status = tokenService.verifyToken(token);
-        return switch (status) {
-            case VALID -> ResponseEntity.ok("Email подтвержден! Аккаунт активирован.");
-            case EXPIRED -> ResponseEntity.badRequest().body("Срок действия токена истек. Запросите новый.");
-            case ALREADY_USED -> ResponseEntity.badRequest().body("Токен уже был использован ранее.");
-            default -> ResponseEntity.badRequest().body("Неверный токен подтверждения!");
-        };
+
+//        return switch (status) {
+//            case VALID -> ResponseEntity.ok("Email подтвержден! Аккаунт активирован.");
+//            case EXPIRED -> ResponseEntity.badRequest().body("Срок действия токена истек. Запросите новый.");
+//            case ALREADY_USED -> ResponseEntity.badRequest().body("Токен уже был использован ранее.");
+//            default -> ResponseEntity.badRequest().body("Неверный токен подтверждения!");
+//        };
+        if (status == TokenStatus.VALID) {
+            return "verification_success";
+        }
+        return "verification_result";
     }
 
     @Override

@@ -89,6 +89,11 @@ body {
     font-size: 1.2em;
 }
 
+#nodeViewMode {
+    position: relative;
+    padding-bottom: 200px; /* место под кнопку совместимости */
+}
+
 /* Кнопки в столбик */
 #nodeViewMode button {
     background-color: #70c454; /* Светло-зелёный */
@@ -129,6 +134,21 @@ body {
 
 #nodeViewMode #deleteNodeButton:hover {
     background-color: #D32F2F; /* Тёмно-красный при наведении */
+}
+
+/* Кнопка совместимости */
+#nodeViewMode #compatButton {
+    background-color: rgba(255, 234, 0, 0.91); /* Жёлтая кнопка */
+    color: black;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-bottom: 0;
+}
+
+#nodeViewMode #compatButton:hover {
+    background-color: #FFC107; /* Немного темнее при наведении */
 }
 /* Кнопка закрытия */
 #closePanelButton {

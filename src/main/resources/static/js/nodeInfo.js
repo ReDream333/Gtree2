@@ -23,6 +23,7 @@ const compatModalClose = document.getElementById("compatModalClose");
 const compatResultText = document.getElementById("compatResultText");
 
 let firstCompatKey = null;
+let secondCompatKey = null;
 
 
 const editLastName = document.getElementById("editLastName");
@@ -75,6 +76,21 @@ function showCompatResult(percent) {
 
 compatModalClose.onclick = () => {
     compatModal.style.display = 'none';
+    if (firstCompatKey) {
+        const firstData = myDiagram.model.findNodeDataForKey(firstCompatKey);
+        const secondData = secondCompatKey ? myDiagram.model.findNodeDataForKey(secondCompatKey) : null;
+
+        myDiagram.model.startTransaction('unhighlight');
+        myDiagram.model.setDataProperty(firstData, 'highlighted', false);
+        if (secondData) {
+            myDiagram.model.setDataProperty(secondData, 'highlighted', false);
+        }
+        myDiagram.model.commitTransaction('unhighlight');
+
+        firstCompatKey = null;
+        secondCompatKey = null;
+        compatButton.disabled = false;
+    }
 };
 
 
@@ -234,6 +250,7 @@ closePanelButton.onclick = () => {
 
 function startCompatibility(nodeKey) {
     firstCompatKey = nodeKey;
+    secondCompatKey = null;
     const data = myDiagram.model.findNodeDataForKey(nodeKey);
     if (data) {
         myDiagram.model.startTransaction("highlight");
@@ -252,13 +269,15 @@ function setupNodeClickListener(myDiagram) {
         const nodeData = part.data;
         if (firstCompatKey && nodeData.key !== firstCompatKey) {
             const firstData = myDiagram.model.findNodeDataForKey(firstCompatKey);
-            fetchCompatibility(firstCompatKey, nodeData.key)
+            secondCompatKey = nodeData.key;
+            const secondData = myDiagram.model.findNodeDataForKey(secondCompatKey);
+
+            myDiagram.model.startTransaction("highlight-second");
+            myDiagram.model.setDataProperty(secondData, "highlighted", true);
+            myDiagram.model.commitTransaction("highlight-second");
+
+            fetchCompatibility(firstCompatKey, secondCompatKey)
                 .then(showCompatResult);
-            myDiagram.model.startTransaction("unhighlight");
-            myDiagram.model.setDataProperty(firstData, "highlighted", false);
-            myDiagram.model.commitTransaction("unhighlight");
-            firstCompatKey = null;
-            compatButton.disabled = false;
         } else {
             const isLeaf = !myDiagram.model.linkDataArray.some((link) => link.from === nodeData.key);
             openNodeInfoPanel({ ...nodeData, isLeaf });

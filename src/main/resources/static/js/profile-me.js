@@ -72,7 +72,7 @@ function initButtons() {
     document.getElementById("delete_button")
         .addEventListener("click", async () => {
             if (!confirm("Удалить аккаунт?")) return;
-            const res = await fetch("users/api/me", {
+            const res = await fetch("/users/api/me", {
                 method : "DELETE",
                 headers: { "Authorization":"Bearer "+access() }
             });
@@ -82,7 +82,7 @@ function initButtons() {
 
     /* редактировать (переход на форму) */
     document.getElementById("edit_button")
-        .addEventListener("click", () => location.href="/settings");
+        .addEventListener("click", () => location.href="/profile/settings");
 
 
     /* выход из аккаунта */
@@ -96,6 +96,13 @@ function initButtons() {
     document.getElementById("chat_button")
         .addEventListener("click", () => location.href="/chat");
 }
+
+document.getElementById("verify_button")
+    .addEventListener("click", async () => {
+        const res = await fetch("/profile/verify", { method: "POST" });
+        if (res.ok) alert("Письмо отправлено");
+        else alert("Ошибка отправки письма");
+    });
 
 /* ---------- POST /saveProfilePhoto ------------------------- */
 async function savePhoto(url) {

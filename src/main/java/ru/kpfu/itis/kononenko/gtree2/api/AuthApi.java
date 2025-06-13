@@ -24,7 +24,7 @@ public interface AuthApi {
     String signOutGet();
 
     @GetMapping("/confirm")
-    ResponseEntity<String> confirmAccount(@RequestParam("token") String token);
+    String confirmAccount(@RequestParam("token") String token);
 
     @GetMapping("/forgot-password")
     String forgotPasswordGet();

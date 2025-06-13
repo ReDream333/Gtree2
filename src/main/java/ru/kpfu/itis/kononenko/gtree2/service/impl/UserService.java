@@ -12,13 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.UserRegisterRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.UserRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.response.UserResponse;
+import ru.kpfu.itis.kononenko.gtree2.entity.Conversation;
 import ru.kpfu.itis.kononenko.gtree2.entity.ERole;
 import ru.kpfu.itis.kononenko.gtree2.entity.Role;
 import ru.kpfu.itis.kononenko.gtree2.entity.User;
 import ru.kpfu.itis.kononenko.gtree2.exception.NotFoundException;
 import ru.kpfu.itis.kononenko.gtree2.mapper.UserMapper;
-import ru.kpfu.itis.kononenko.gtree2.repository.RoleRepository;
-import ru.kpfu.itis.kononenko.gtree2.repository.UserRepository;
+import ru.kpfu.itis.kononenko.gtree2.repository.*;
 import ru.kpfu.itis.kononenko.gtree2.service.security.CustomUserDetails;
 
 import java.util.*;
@@ -29,13 +29,17 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final ConversationRepository conversationRepository;
     private final PasswordEncoder encoder;
     private final UserMapper userMapper;
     private final CacheManager cacheManager;
+    private final PrivateMessageRepository messageRepository;
+    private final VerificationTokenRepository tokenRepository;
+    private final RefreshTokenService refreshTokenService;
 
 
     @Transactional
-    public Long save(final UserRegisterRequest request) {
+    public User save(final UserRegisterRequest request) {
 
         User user = userMapper.toUser(request);
         user.setPasswordHash(encoder.encode(request.password()));
@@ -46,9 +50,8 @@ public class UserService {
 
         user.getRoles().add(userRole);
 
-        Long id = userRepository.save(user).getId();
         Objects.requireNonNull(cacheManager.getCache("users")).evict(user.getUsername());
-        return id;
+        return userRepository.save(user);
     }
 
     public List<UserResponse> getAll(int page, int size) {
@@ -108,13 +111,27 @@ public class UserService {
     }
 
     public void deleteByUsername(String username) {
+        User user = findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        beforeUserDelete(user);
         userRepository.deleteByUsername(username);
         Objects.requireNonNull(cacheManager.getCache("users")).evict(username);
+    }
+
+    private void beforeUserDelete(User user) {
+        List<Conversation> conversations = conversationRepository.findByUser1OrUser2(user, user);
+        for (Conversation conv : conversations) {
+            messageRepository.deleteAllByConversation(conv);
+        }
+        conversationRepository.deleteAll(conversations);
+        tokenRepository.deleteAllByUser(user);
+        refreshTokenService.invalidate(user.getUsername());
     }
 
     @Transactional
     public void deleteCurrent() {
         User user = getAuthenticatedUser();
+        beforeUserDelete(user);
         userRepository.delete(user);
         Objects.requireNonNull(cacheManager.getCache("users")).evict(user.getUsername());
     }

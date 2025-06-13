@@ -8,5 +8,6 @@ import java.sql.Timestamp;
 public record UserResponse(
         String username,
         String email,
-        Timestamp createdAt
+        Timestamp createdAt,
+        Boolean emailVerified
 ){}

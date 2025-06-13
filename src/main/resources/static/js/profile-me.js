@@ -25,7 +25,10 @@ async function loadMe() {
 
         const u = await res.json();
         document.getElementById("uname").textContent  = u.username;
-        document.getElementById("email").textContent += u.email;
+        document.getElementById("email-text").textContent = u.email;
+        if (u.emailVerified) {
+            document.getElementById("verified-icon").style.display = "inline";
+        }
         document.getElementById("photo").src          = u.photoUrl ?? "/images/sunf.jpg";
 
         const date = new Date(u.createdAt);

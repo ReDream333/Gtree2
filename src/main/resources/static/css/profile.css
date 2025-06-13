@@ -150,3 +150,9 @@ body {
     font-size: 2em;
     margin-bottom: 10px;
 }
+
+.verified-icon {
+    color: #4CAF50;
+    margin-left: 5px;
+    font-size: 1.2em;
+}

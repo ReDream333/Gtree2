@@ -1,16 +1,12 @@
 package ru.kpfu.itis.kononenko.gtree2.service.impl;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
-import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import ru.kpfu.itis.kononenko.gtree2.config.property.MailProps;
+import ru.kpfu.itis.kononenko.gtree2.config.property.MailProperties;
 import ru.kpfu.itis.kononenko.gtree2.entity.User;
 import ru.kpfu.itis.kononenko.gtree2.entity.VerificationToken;
 
@@ -20,7 +16,7 @@ import ru.kpfu.itis.kononenko.gtree2.entity.VerificationToken;
 public class MailService {
     private final JavaMailSender mailSender;
 
-    private final MailProps mailProps;
+    private final MailProperties mailProperties;
 
     public void sendVerificationEmail(User user, VerificationToken token) {
         String toEmail = user.getEmail();
@@ -38,7 +34,7 @@ public class MailService {
     public void sendSimpleEmail(String toEmail, String subject, String message) {
         try {
             SimpleMailMessage msg = new SimpleMailMessage();
-            msg.setFrom(mailProps.getUsername());
+            msg.setFrom(mailProperties.getUsername());
             msg.setTo(toEmail);
             msg.setSubject(subject);
             msg.setText(message);

@@ -12,9 +12,6 @@
 <div class="registration-container">
     <h2>Вход</h2>
 
-    <!-- по умолчанию Spring Security принимает POST /login;
-         если в SecurityConfig указан .loginProcessingUrl("/auth/process-login"),
-         подставьте этот URL -->
     <form id="loginForm" th:action="@{/auth/sign-in}" method="post">
 
         <div class="form-group">
@@ -32,6 +29,7 @@
     </form>
 
     <a th:href="@{/auth/sign-up}" class="link">Еще не с нами? Зарегистрируйтесь</a>
+    <a th:href="@{/auth/google}" class="link">Войти через Google</a>
 </div>
 </body>
 <script th:src="@{/js/sing.js}" defer></script>

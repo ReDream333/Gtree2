@@ -9,12 +9,20 @@ const nodeBirthDate = document.getElementById("nodeBirthDate");
 const nodeDeathDate = document.getElementById("nodeDeathDate");
 const nodeComment = document.getElementById("nodeComment");
 const nodeZodiac = document.getElementById("nodeZodiac");
+const nodeZodiacIcon = document.getElementById("nodeZodiacIcon");
 const nodeViewPhoto = document.getElementById("nodeViewPhoto");
 const deleteNodeButton = document.getElementById("deleteNodeButton");
 const editNodeButton = document.getElementById("editNodeButton");
 const biographyButton = document.getElementById("biographyButton");
 const photoAlbumButton = document.getElementById("photoAlbumButton");
 const closePanelButton = document.getElementById("closePanelButton");
+const compatButton = document.getElementById("compatButton");
+
+const compatModal = document.getElementById("compatModal");
+const compatModalClose = document.getElementById("compatModalClose");
+const compatResultText = document.getElementById("compatResultText");
+
+let firstCompatKey = null;
 
 
 const editLastName = document.getElementById("editLastName");
@@ -26,6 +34,50 @@ const saveNodeButton = document.getElementById("saveNodeButton");
 const cancelEditButton = document.getElementById("cancelEditButton");
 
 let uploadedPhotoUrl = ""; // Переменная для хранения ссылки на фото
+
+const zodiacIcons = {
+    "Овен": "♈",
+    "Телец": "♉",
+    "Близнецы": "♊",
+    "Рак": "♋",
+    "Лев": "♌",
+    "Дева": "♍",
+    "Весы": "♎",
+    "Скорпион": "♏",
+    "Стрелец": "♐",
+    "Козерог": "♑",
+    "Водолей": "♒",
+    "Рыбы": "♓"
+};
+
+function fetchCompatibility(id1, id2) {
+    return fetch(`/api/trees/${treeId}/nodes/compatibility?first=${id1}&second=${id2}`)
+        .then(r => r.json())
+        .then(res => res.percent ?? null)
+        .catch(() => null);
+}
+
+function showCompatResult(percent) {
+    if (percent === null) {
+        compatResultText.textContent = 'Невозможно совместить, попробуйте с другой нодой';
+    } else {
+        compatResultText.textContent = `Совместимость: ${percent}%`;
+        if (percent >= 70) {
+            confetti({particleCount:150, spread:120, emojis:['❤️']});
+        } else if (percent >= 40) {
+            confetti({particleCount:120, spread:100});
+        } else {
+            confetti({particleCount:80, spread:120, emojis:['💧','⚡']});
+        }
+    }
+    compatModal.style.display = 'flex';
+}
+
+compatModalClose.onclick = () => {
+    compatModal.style.display = 'none';
+};
+
+
 
 // Инициализация виджета Cloudinary
 var myWidget = cloudinary.createUploadWidget({
@@ -113,7 +165,10 @@ function openNodeInfoPanel(nodeData) {
     nodeDeathDate.textContent = (nodeData.death !== "null" && nodeData.death != null && nodeData.death) ? nodeData.death : "Жив/Неизвестно о смерти";
     nodeComment.textContent = nodeData.comment || "";
     nodeZodiac.textContent = nodeData.zodiacSign ? nodeData.zodiacSign : "-";
+    nodeZodiacIcon.textContent = nodeData.zodiacSign ? (zodiacIcons[nodeData.zodiacSign] || "") : "";
     deleteNodeButton.style.display = nodeData.isLeaf ? "inline-block" : "none";
+
+    compatButton.disabled = false;
 
     nodeViewMode.style.display = "block";
     nodeEditMode.style.display = "none";
@@ -122,6 +177,7 @@ function openNodeInfoPanel(nodeData) {
     deleteNodeButton.onclick = () => deleteNode(nodeData.key);
     biographyButton.onclick = () => window.location.href = `/biography?nodeId=${nodeData.key}`;
     photoAlbumButton.onclick = () => window.location.href = `/album?nodeId=${nodeData.key}`;
+    compatButton.onclick = () => startCompatibility(nodeData.key);
 }
 
 function editNode(nodeData) {
@@ -176,6 +232,17 @@ closePanelButton.onclick = () => {
     nodeInfoPanel.style.display = "none";
 };
 
+function startCompatibility(nodeKey) {
+    firstCompatKey = nodeKey;
+    const data = myDiagram.model.findNodeDataForKey(nodeKey);
+    if (data) {
+        myDiagram.model.startTransaction("highlight");
+        myDiagram.model.setDataProperty(data, "highlighted", true);
+        myDiagram.model.commitTransaction("highlight");
+    }
+    compatButton.disabled = true;
+}
+
 // Слушатель кликов на ноды диаграммы
 function setupNodeClickListener(myDiagram) {
     myDiagram.addDiagramListener("ObjectSingleClicked", function (e) {
@@ -183,7 +250,19 @@ function setupNodeClickListener(myDiagram) {
         if (!(part instanceof go.Node)) return;
 
         const nodeData = part.data;
-        const isLeaf = !myDiagram.model.linkDataArray.some((link) => link.from === nodeData.key);
+        if (firstCompatKey && nodeData.key !== firstCompatKey) {
+            const firstData = myDiagram.model.findNodeDataForKey(firstCompatKey);
+            fetchCompatibility(firstCompatKey, nodeData.key)
+                .then(showCompatResult);
+            myDiagram.model.startTransaction("unhighlight");
+            myDiagram.model.setDataProperty(firstData, "highlighted", false);
+            myDiagram.model.commitTransaction("unhighlight");
+            firstCompatKey = null;
+            compatButton.disabled = false;
+        } else {
+            const isLeaf = !myDiagram.model.linkDataArray.some((link) => link.from === nodeData.key);
+            openNodeInfoPanel({ ...nodeData, isLeaf });
+        }
 
         openNodeInfoPanel({ ...nodeData, isLeaf });
     });

@@ -84,6 +84,10 @@ body {
     border: 3px solid #6ABE4E;
 }
 
+.zodiac-icon {
+    margin-left: 5px;
+    font-size: 1.2em;
+}
 
 /* Кнопки в столбик */
 #nodeViewMode button {
@@ -99,6 +103,11 @@ body {
     transition: background-color 0.3s ease, transform 0.2s ease;
     width: 100%; /* Полная ширина */
     margin-bottom: 10px; /* Отступ между кнопками */
+}
+
+#nodeViewMode button:disabled {
+    opacity: 0.5;
+    cursor: default;
 }
 
 #nodeViewMode button:hover {

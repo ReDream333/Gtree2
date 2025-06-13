@@ -3,6 +3,7 @@ package ru.kpfu.itis.kononenko.gtree2.controller.rest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.kpfu.itis.kononenko.gtree2.dto.response.CompatibilityResponse;
 import ru.kpfu.itis.kononenko.gtree2.dto.response.NodeResponse;
 import ru.kpfu.itis.kononenko.gtree2.dto.request.NodeFormRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.response.ZodiacStatsResponse;
@@ -10,6 +11,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
 import ru.kpfu.itis.kononenko.gtree2.service.NodeService;
+import ru.kpfu.itis.kononenko.gtree2.utils.ZodiacCompatibility;
+
 
 import static ru.kpfu.itis.kononenko.gtree2.utils.ZodiacUtils.getZodiacSign;
 
@@ -70,6 +73,15 @@ public class NodeRestController {
     @GetMapping("/zodiac-stat")
     public ResponseEntity<ZodiacStatsResponse> zodiacStat(@PathVariable Long treeId) {
         return ResponseEntity.ok(nodeService.getZodiacStats(treeId));
+    }
+
+    @GetMapping("/compatibility")
+    public ResponseEntity<CompatibilityResponse> compatibility(@RequestParam Long first,
+                                                               @RequestParam Long second) {
+        String sign1 = nodeService.get(first).zodiacSign();
+        String sign2 = nodeService.get(second).zodiacSign();
+        Integer percent = ZodiacCompatibility.computeCompatibility(sign1, sign2);
+        return ResponseEntity.ok(CompatibilityResponse.builder().percent(percent).build());
     }
 
 

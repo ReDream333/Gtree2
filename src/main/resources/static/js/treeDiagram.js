@@ -56,6 +56,10 @@ function init() {
         return 'orange';
     }
 
+    function colorConverter(data) {
+        if (data.highlighted) return 'yellow';
+        return genderBrushConverter(data.gender);
+    }
 
 
 
@@ -73,7 +77,7 @@ function init() {
                 stretch: go.Stretch.Fill,
                 alignment: go.Spot.Center
             })
-                .bind('fill', 'gender', genderBrushConverter),
+                .bind('fill', '', colorConverter),
             new go.Panel('Vertical')
                     .add(
                         new go.TextBlock({

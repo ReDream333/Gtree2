@@ -53,4 +53,8 @@ public class VerificationTokenService {
         tokenRepo.save(token);
         return TokenStatus.VALID;
     }
+
+    public void deleteAllByUser(User user) {
+        tokenRepo.deleteAllByUser(user);
+    }
 }

@@ -1,12 +1,15 @@
 package ru.kpfu.itis.kononenko.gtree2.service.impl;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import ru.kpfu.itis.kononenko.gtree2.aop.Retry;
 import ru.kpfu.itis.kononenko.gtree2.config.property.MailProps;
 import ru.kpfu.itis.kononenko.gtree2.entity.User;
 import ru.kpfu.itis.kononenko.gtree2.entity.VerificationToken;
@@ -22,7 +25,7 @@ public class MailService {
     public void sendVerificationEmail(User user, VerificationToken token) {
         String toEmail = user.getEmail();
         String subject = "Подтверждение регистрации";
-        String confirmUrl = "http://localhost:8080/auth/confirm?token=" + token.getToken();
+        String confirmUrl = "http://localhost:8081/auth/confirm?token=" + token.getToken();
         String message = "Здравствуйте, " +
                 "\n\nДля подтверждения учетной записи перейдите по ссылке: "
                 + confirmUrl +

@@ -76,8 +76,14 @@ function initButtons() {
                 method : "DELETE",
                 headers: { "Authorization":"Bearer "+access() }
             });
-            if (res.ok) { localStorage.clear(); location.href="/"; }
-            else        { showError("Не удалось удалить"); }
+            if (res.ok) {
+                await fetch("/auth/sign-out");
+                localStorage.clear();
+                location.href="/";
+            }
+            else {
+                showError("Не удалось удалить");
+            }
         });
 
     /* редактировать (переход на форму) */

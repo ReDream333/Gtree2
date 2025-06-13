@@ -11,6 +11,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -106,16 +107,20 @@ public class JwtFilter extends OncePerRequestFilter {
         List<String> roles = jwtTokenProvider.getRolesFromToken(token);
 
         if (username != null && roles != null) {
-            CustomUserDetails userDetails =
-                    (CustomUserDetails) userDetailsService.loadUserByUsername(username);
+            try {
+                CustomUserDetails userDetails =
+                        (CustomUserDetails) userDetailsService.loadUserByUsername(username);
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
-                    );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
+                        );
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (UsernameNotFoundException ex) {
+                throw new BadCredentialsException("Invalid JWT token", ex);
+            }
         }
     }
 
@@ -138,8 +143,12 @@ public class JwtFilter extends OncePerRequestFilter {
             return false;
         }
 
-        CustomUserDetails userDetails =
-                (CustomUserDetails) userDetailsService.loadUserByUsername(username);
+        CustomUserDetails userDetails;
+        try {
+            userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
+        } catch (UsernameNotFoundException ex) {
+            return false;
+        }
 
         String newAccess = jwtTokenProvider.generateAccessToken(userDetails);
         String newRefresh = jwtTokenProvider.generateRefreshToken(userDetails);

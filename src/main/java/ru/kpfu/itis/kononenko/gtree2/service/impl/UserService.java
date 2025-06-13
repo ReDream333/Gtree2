@@ -34,8 +34,8 @@ public class UserService {
     private final UserMapper userMapper;
     private final CacheManager cacheManager;
     private final PrivateMessageRepository messageRepository;
-    private final VerificationTokenRepository tokenRepository;
     private final RefreshTokenService refreshTokenService;
+    private final VerificationTokenService verificationTokenService;
 
 
     @Transactional
@@ -106,15 +106,12 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
     public void deleteByUsername(String username) {
         User user = findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("User not found"));
         beforeUserDelete(user);
         userRepository.deleteByUsername(username);
+
         Objects.requireNonNull(cacheManager.getCache("users")).evict(username);
     }
 
@@ -124,8 +121,8 @@ public class UserService {
             messageRepository.deleteAllByConversation(conv);
         }
         conversationRepository.deleteAll(conversations);
-        tokenRepository.deleteAllByUser(user);
         refreshTokenService.invalidate(user.getUsername());
+        verificationTokenService.deleteAllByUser(user);
     }
 
     @Transactional

@@ -24,6 +24,6 @@ public interface NodeRepository extends JpaRepository<Node, Long> {
 
     List<Object[]> countZodiacSignsByTreeId(@Param("treeId") Long treeId);
 
-    @Query("SELECT n FROM Node n WHERE n.birthDate IS NOT NULL AND FUNCTION('month', n.birthDate) = :month AND FUNCTION('day', n.birthDate) = :day")
+    @Query("SELECT n FROM Node n WHERE n.birthDate IS NOT NULL AND MONTH(n.birthDate) = :month AND DAY(n.birthDate) = :day")
     List<Node> findByBirthday(@Param("month") int month, @Param("day") int day);
 }

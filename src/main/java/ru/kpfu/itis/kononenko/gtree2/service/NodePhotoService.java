@@ -10,4 +10,5 @@ public interface NodePhotoService {
     NodePhoto add(Long nodeId, MultipartFile file);
     NodePhoto updateDescription(Long id, String description);
     void delete(Long id);
+    void deleteAllByNodeId(Long nodeId);
 }

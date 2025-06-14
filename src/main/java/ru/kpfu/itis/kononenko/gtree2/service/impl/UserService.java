@@ -19,6 +19,7 @@ import ru.kpfu.itis.kononenko.gtree2.entity.User;
 import ru.kpfu.itis.kononenko.gtree2.exception.NotFoundException;
 import ru.kpfu.itis.kononenko.gtree2.mapper.UserMapper;
 import ru.kpfu.itis.kononenko.gtree2.repository.*;
+import ru.kpfu.itis.kononenko.gtree2.service.NodePhotoService;
 import ru.kpfu.itis.kononenko.gtree2.service.security.CustomUserDetails;
 
 import java.util.*;
@@ -36,6 +37,10 @@ public class UserService {
     private final PrivateMessageRepository messageRepository;
     private final RefreshTokenService refreshTokenService;
     private final VerificationTokenService verificationTokenService;
+    private final TreeRepository treeRepository;
+    private final NodeRepository nodeRepository;
+    private final NodePhotoService nodePhotoService;
+    private final NodeBiographyRepository biographyRepository;
 
 
     @Transactional
@@ -120,6 +125,15 @@ public class UserService {
         for (Conversation conv : conversations) {
             messageRepository.deleteAllByConversation(conv);
         }
+
+        treeRepository.findByUserId(user.getId()).forEach(tree -> {
+            nodeRepository.findByTreeId(tree.getId()).forEach(node -> {
+                nodePhotoService.deleteAllByNodeId(node.getId());
+                biographyRepository.deleteByNodeId(node.getId());
+            });
+        });
+        treeRepository.deleteAll(treeRepository.findByUserId(user.getId()));
+
         conversationRepository.deleteAll(conversations);
         refreshTokenService.invalidate(user.getUsername());
         verificationTokenService.deleteAllByUser(user);

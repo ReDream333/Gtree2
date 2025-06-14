@@ -180,11 +180,21 @@ function saveNodeData(nodeData) {
 }
 
 // Функция открытия панели с инфой о нодах
-function openNodeInfoPanel(nodeData) {
+async function openNodeInfoPanel(nodeData) {
     nodeInfoPanel.style.display = "block";
 
     // Устанавливаем фото
-    if (typeof nodeData.photo !== "undefined" && nodeData.photo && nodeData.photo !== "null" && nodeData.photo.trim() !== "" ) {
+    try {
+        const res = await fetch(`/api/trees/${treeId}/nodes/${nodeData.key}`);
+        if (res.ok) {
+            const fresh = await res.json();
+            nodeData.photo = fresh.photo;
+        }
+    } catch (e) {
+        console.error('Не удалось обновить данные ноды', e);
+    }
+
+    if (nodeData.photo && nodeData.photo !== "null" && nodeData.photo.trim() !== "") {
         nodeViewPhoto.src = nodeData.photo;
     } else {
         nodeViewPhoto.src = "/images/ava.jpg"; // Дефолтное фото
@@ -222,6 +232,7 @@ function editNode(nodeData) {
 
     if (nodeData.photo) {
         nodeViewPhoto.src = nodeData.photo;
+        uploadedPhotoUrl = nodeData.photo;
     }
 
     // Переключаем режимы

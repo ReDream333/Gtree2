@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface NodePhotoRepository extends JpaRepository<NodePhoto, Long> {
     List<NodePhoto> findByNodeId(Long nodeId);
+    void deleteAllByNodeId(Long nodeId);
 }

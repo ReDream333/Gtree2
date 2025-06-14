@@ -25,7 +25,7 @@ public class BirthdayReminderJob {
     private final UserRepository userRepository;
     private final MailService mailService;
 
-    @Scheduled(cron = "0 0 7 * * *")
+    @Scheduled(cron = "0 9 7 * * *")
     public void sendReminders() {
         LocalDate tomorrow = LocalDate.now().plusDays(1);
         int month = tomorrow.getMonthValue();

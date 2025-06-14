@@ -78,4 +78,21 @@ public class NodePhotoServiceImpl implements NodePhotoService {
         } catch (Exception ignored) {}
         photoRepository.delete(photo);
     }
+
+    @Override
+    public void deleteAllByNodeId(Long nodeId) {
+        List<NodePhoto> photos = photoRepository.findByNodeId(nodeId);
+        for (NodePhoto photo : photos) {
+            String objectName = photo.getPhotoUrl().replaceFirst(properties.getPublicBaseUrl() + "/", "");
+            try {
+                minioClient.removeObject(RemoveObjectArgs.builder()
+                        .bucket(properties.getBucket())
+                        .object(objectName)
+                        .build());
+            } catch (Exception ignored) {}
+        }
+        photoRepository.deleteAllByNodeId(nodeId);
+    }
+
+
 }

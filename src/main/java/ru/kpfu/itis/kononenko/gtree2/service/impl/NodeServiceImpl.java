@@ -1,9 +1,6 @@
 package ru.kpfu.itis.kononenko.gtree2.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kpfu.itis.kononenko.gtree2.dto.response.NodeResponse;
@@ -36,7 +33,6 @@ public class NodeServiceImpl implements NodeService {
 
 
     @Override
-    @Cacheable(value = "nodes", key = "#nodeId")
     public NodeResponse get(Long nodeId) {
         Node node = nodeRepository.findById(nodeId)
                 .orElseThrow(() -> new NotFoundException("Node not found with id=%s".formatted(nodeId)));
@@ -44,7 +40,6 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    @CachePut(value = "nodes", key = "#result.key")
     public NodeResponse save(Long treeId, NodeFormRequest form) {
         Tree tree = treeRepository.findById(treeId)
                 .orElseThrow(() -> new NotFoundException("Tree not found with id=%s".formatted(treeId)));
@@ -73,7 +68,6 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    @CachePut(value = "nodes", key = "#nodeId")
     public NodeResponse update(Long nodeId, NodeFormRequest form) {
         Node node = nodeRepository.findById(nodeId)
                 .orElseThrow(() -> new NotFoundException("Node not found: " + nodeId));
@@ -83,7 +77,6 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    @CacheEvict(value = "nodes", key = "#nodeId")
     public void delete(Long nodeId) {
         nodeRepository.deleteById(nodeId);
     }
@@ -106,7 +99,6 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    @CachePut(value = "nodes", key = "#nodeId")
     public NodeResponse updatePhoto(Long nodeId, String photoUrl) {
         Node node = nodeRepository.findById(nodeId)
                 .orElseThrow(() -> new NotFoundException("Node not found id=" + nodeId));

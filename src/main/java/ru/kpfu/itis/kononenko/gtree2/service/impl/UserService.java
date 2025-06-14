@@ -41,6 +41,7 @@ public class UserService {
     private final NodeRepository nodeRepository;
     private final NodePhotoService nodePhotoService;
     private final NodeBiographyRepository biographyRepository;
+    private final TreeSubscriptionRepository treeSubscriptionRepository;
 
 
     @Transactional
@@ -125,6 +126,8 @@ public class UserService {
         for (Conversation conv : conversations) {
             messageRepository.deleteAllByConversation(conv);
         }
+
+        treeSubscriptionRepository.deleteByUserId(user.getId());
 
         treeRepository.findByUserId(user.getId()).forEach(tree -> {
             nodeRepository.findByTreeId(tree.getId()).forEach(node -> {

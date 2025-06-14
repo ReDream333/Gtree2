@@ -8,5 +8,6 @@ import java.util.List;
 public interface TreeSubscriptionRepository extends JpaRepository<TreeSubscription, Long> {
     boolean existsByTreeIdAndUserId(Long treeId, Long userId);
     void deleteByTreeIdAndUserId(Long treeId, Long userId);
+    void deleteByUserId(Long userId);
     List<TreeSubscription> findByTreeId(Long treeId);
 }

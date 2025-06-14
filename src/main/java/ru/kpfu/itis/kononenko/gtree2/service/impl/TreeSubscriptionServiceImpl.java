@@ -34,6 +34,10 @@ public class TreeSubscriptionServiceImpl implements TreeSubscriptionService {
         subscriptionRepository.deleteByTreeIdAndUserId(treeId, userId);
     }
 
+    public void unsubscribeAll(Long userId) {
+        subscriptionRepository.deleteByUserId(userId);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public boolean isSubscribed(Long treeId, Long userId) {

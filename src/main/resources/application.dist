@@ -1,0 +1,75 @@
+server:
+  port:
+
+spring:
+
+  datasource:
+    driver-class-name:
+    url: jdbc:postgresql:
+    username:
+    password:
+    hikari:
+      maximum-pool-size:
+      minimum-idle:
+
+  application:
+    name: GTree2
+
+  jpa:
+    database-platform:
+    hibernate:
+      ddl-auto:
+    show-sql:
+
+  thymeleaf:
+    suffix:
+    cache:
+
+  mail:
+    host:
+    username:
+    password:
+    protocol:
+    port: 465
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable:
+            trust:
+          auth: true
+          connectiontimeout:
+          timeout:
+          writetimeout:
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    org.hibernate.SQL: DEBUG
+
+jwt:
+  secret:
+  expiration:
+  refresh-expiration:
+
+minio:
+  url:
+  access-key:
+  secret-key:
+  bucket:
+  public-base-url:
+
+wikipedia:
+  api:
+    url:
+
+oauth:
+  google:
+    client-id:
+    client-secret:
+    redirect-uri:
+
+
+
+

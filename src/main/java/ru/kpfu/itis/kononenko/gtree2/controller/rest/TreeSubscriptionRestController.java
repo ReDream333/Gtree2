@@ -1,6 +1,7 @@
 package ru.kpfu.itis.kononenko.gtree2.controller.rest;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,11 @@ public class TreeSubscriptionRestController {
     @PostMapping
     public ResponseEntity<?> subscribe(@PathVariable Long treeId,
                                         @AuthenticationPrincipal CustomUserDetails user) {
-        subscriptionService.subscribe(treeId, user.getUser().getId());
+        if (Boolean.FALSE.equals(user.getUser().getEmailVerified())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "EMAIL_NOT_VERIFIED"));
+        }
+            subscriptionService.subscribe(treeId, user.getUser().getId());
         return ResponseEntity.ok().build();
     }
 

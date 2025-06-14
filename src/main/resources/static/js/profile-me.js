@@ -29,7 +29,7 @@ async function loadMe() {
         if (u.emailVerified) {
             document.getElementById("verified-icon").style.display = "inline";
         }
-        document.getElementById("photo").src          = u.photoUrl ?? "/images/sunf.jpg";
+        document.getElementById("photo").src          = u.photo ?? "/images/sunf.jpg";
 
         const date = new Date(u.createdAt);
         document.getElementById("createdAt").textContent +=
@@ -115,7 +115,7 @@ document.getElementById("verify_button")
 
 /* ---------- POST /saveProfilePhoto ------------------------- */
 async function savePhoto(url) {
-    const res = await fetch("/saveProfilePhoto", {
+    const res = await fetch("/profile/saveProfilePhoto", {
         method : "POST",
         headers: { "Content-Type":"application/json",
             "Authorization":"Bearer "+access() },

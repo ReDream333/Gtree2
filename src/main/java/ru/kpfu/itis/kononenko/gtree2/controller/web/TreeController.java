@@ -89,6 +89,7 @@ public class TreeController {
 
         model.addAttribute("nodes", nodesJson);
         model.addAttribute("links", linksJson);
+        model.addAttribute("treeId", treeId);
 
         return "view";
     }

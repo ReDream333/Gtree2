@@ -35,6 +35,7 @@ const saveNodeButton = document.getElementById("saveNodeButton");
 const cancelEditButton = document.getElementById("cancelEditButton");
 
 let uploadedPhotoUrl = ""; // Переменная для хранения ссылки на фото
+let currentNodeId = null;
 
 const zodiacIcons = {
     "Овен": "♈",
@@ -108,6 +109,23 @@ var myWidget = cloudinary.createUploadWidget({
 
         // Обновляем превью фото в режиме редактирования
         nodeViewPhoto.src = uploadedPhotoUrl;
+        if (currentNodeId) {
+            fetch(`/api/trees/${treeId}/nodes/${currentNodeId}/saveNodePhoto`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ imageUrl: uploadedPhotoUrl })
+            })
+                .then(r => r.ok ? r.json() : Promise.reject())
+                .then(updated => {
+                    const nodeDatum = myDiagram.model.findNodeDataForKey(updated.key);
+                    if (nodeDatum) {
+                        myDiagram.model.startTransaction('updateNodePhoto');
+                        myDiagram.model.setDataProperty(nodeDatum, 'photo', updated.photo);
+                        myDiagram.model.commitTransaction('updateNodePhoto');
+                    }
+                })
+                .catch(() => alert('Ошибка при обновлении фото ноды'));
+        }
     }
 });
 
@@ -127,11 +145,7 @@ function saveNodeData(nodeData) {
         photoUrl: uploadedPhotoUrl || nodeData.photo
     };
 
-    // Отправляем данные на сервер - тут конечно должен быть ajax,
-    // но я уже все мозги себе съела, потому что у меня не обновляется
-    // даты в диаграмме без перезагрузки. Хоть убей, имя - да, даты - нет.
-    // Плюс там какие-то скрытые камни появляются.
-    // Пусть пока вот так тупо будет
+
     fetch(`/api/trees/${treeId}/nodes/${nodeData.key}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -197,6 +211,7 @@ function openNodeInfoPanel(nodeData) {
 }
 
 function editNode(nodeData) {
+    currentNodeId = nodeData.key;
     // Заполняем редактируемые поля
     const [firstName, lastName] = nodeData.fullName.split(" ");
     editFirstName.value = firstName || "имя";
@@ -246,6 +261,7 @@ function deleteNode(nodeKey) {
 // Закрытие окна
 closePanelButton.onclick = () => {
     nodeInfoPanel.style.display = "none";
+    currentNodeId = null;
 };
 
 function startCompatibility(nodeKey) {
@@ -293,6 +309,7 @@ function setupNodeClickListener(myDiagram) {
 // Слушатель для кнопки закрытия панели
 closePanelButton.onclick = () => {
     nodeInfoPanel.style.display = "none";
+    currentNodeId = null;
 };
 
 // Привязка событий после инициализации диаграммы

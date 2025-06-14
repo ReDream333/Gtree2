@@ -132,5 +132,14 @@ public class UserService {
         userRepository.delete(user);
         Objects.requireNonNull(cacheManager.getCache("users")).evict(user.getUsername());
     }
+
+    @Transactional
+    public UserResponse updateCurrentPhoto(String photoUrl) {
+        User user = getAuthenticatedUser();
+        user.setPhoto(photoUrl);
+        userRepository.save(user);
+        Objects.requireNonNull(cacheManager.getCache("users")).evict(user.getUsername());
+        return userMapper.toUserResponse(user);
+    }
 }
 

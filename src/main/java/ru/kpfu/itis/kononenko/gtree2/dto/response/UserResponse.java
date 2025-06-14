@@ -9,5 +9,6 @@ public record UserResponse(
         String username,
         String email,
         Timestamp createdAt,
-        Boolean emailVerified
+        Boolean emailVerified,
+        String photo
 ){}

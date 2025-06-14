@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!error && result && result.event === "success") {
                 console.log('Done! Here is the image info: ', result.info);
                 const uploadedImageUrl = result.info.secure_url;
-                fetch(contextPath + '/saveProfilePhoto', {
+                fetch(contextPath + '/profile/saveProfilePhoto', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

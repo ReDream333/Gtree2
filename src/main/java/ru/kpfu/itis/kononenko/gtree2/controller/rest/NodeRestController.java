@@ -9,6 +9,7 @@ import ru.kpfu.itis.kononenko.gtree2.dto.request.NodeFormRequest;
 import ru.kpfu.itis.kononenko.gtree2.dto.response.ZodiacStatsResponse;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
+import java.util.Map;
 
 import ru.kpfu.itis.kononenko.gtree2.service.NodeService;
 import ru.kpfu.itis.kononenko.gtree2.utils.ZodiacCompatibility;
@@ -84,6 +85,12 @@ public class NodeRestController {
         return ResponseEntity.ok(CompatibilityResponse.builder().percent(percent).build());
     }
 
+    @PostMapping("/{nodeId}/saveNodePhoto")
+    public ResponseEntity<NodeResponse> saveNodePhoto(@PathVariable Long nodeId,
+                                                      @RequestBody Map<String, String> body) {
+        String photoUrl = body.get("imageUrl");
+        return ResponseEntity.ok(nodeService.updatePhoto(nodeId, photoUrl));
+    }
 
 
 }

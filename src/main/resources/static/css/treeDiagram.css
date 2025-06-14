@@ -446,6 +446,32 @@ canvas.confetti-canvas {
     box-shadow: 0 3px 8px rgba(0, 13, 255, 0.2);
 }
 
+#subscribeBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 0.6em 1.2em;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #6ABE4E 0%, #4E9A3C 100%);
+    border: none;
+    border-radius: 0.5em;
+    box-shadow: 0 4px 10px rgba(0, 13, 255, 0.3);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#subscribeBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 13, 255, 0.5);
+}
+
+#subscribeBtn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(0, 13, 255, 0.2);
+}
+
 
 
 

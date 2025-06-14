@@ -11,5 +11,6 @@ public interface NodeService {
     NodeResponse update(Long nodeId, NodeFormRequest form);
     void         delete(Long nodeId);
     ZodiacStatsResponse getZodiacStats(Long treeId);
+    NodeResponse updatePhoto(Long nodeId, String photoUrl);
 
 }

@@ -133,6 +133,12 @@
   </div>
 </div>
 
+<div id="subscriptionModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <p id="subscriptionMessage"></p>
+    <button id="subscriptionClose" class="modal-button">Ок</button>
+  </div>
+</div>
 <script th:inline="javascript">
   /*<![CDATA[*/
   const nodesJsonString = /*[[${nodes}]]*/ '[]';
@@ -164,6 +170,7 @@
 <script th:src="@{/js/nodeInfo.js}"></script>    <!-- Добавляет функционал нод -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script th:src="@{/js/zodiacStats.js}"></script>
+<script th:src="@{/js/subscription.js}"></script>
 
 </body>
 </html>

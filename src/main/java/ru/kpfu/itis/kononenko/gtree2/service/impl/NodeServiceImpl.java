@@ -98,5 +98,15 @@ public class NodeServiceImpl implements NodeService {
         return new ZodiacStatsResponse(stats, message);
     }
 
+    @Override
+    public NodeResponse updatePhoto(Long nodeId, String photoUrl) {
+        Node node = nodeRepository.findById(nodeId)
+                .orElseThrow(() -> new NotFoundException("Node not found id=" + nodeId));
+        node.setPhotoUrl(photoUrl);
+        nodeRepository.save(node);
+        return nodeMapper.toResponse(node);
+    }
+
+
 
 }
